@@ -1,0 +1,124 @@
+{
+  "products": [
+    {
+      "id": "ridge-shell-2",
+      "name": "RidgeShell 2",
+      "category": "waterproof-jacket",
+      "price_gbp": 189,
+      "waterproof": true,
+      "weight_grams": 340,
+      "colours": ["black", "navy", "orange"],
+      "sizes": ["S", "M", "L", "XL"],
+      "fit": "regular",
+      "description": "Lightweight three-layer waterproof hiking shell."
+    },
+    {
+      "id": "aerotrail-pro",
+      "name": "AeroTrail Pro",
+      "category": "waterproof-jacket",
+      "price_gbp": 215,
+      "waterproof": true,
+      "weight_grams": 310,
+      "colours": ["black", "grey", "green"],
+      "sizes": ["XS", "S", "M", "L"],
+      "fit": "athletic",
+      "description": "Ultralight waterproof shell for fast hiking."
+    },
+    {
+      "id": "northpeak-alpine-shell",
+      "name": "NorthPeak Alpine Shell",
+      "category": "waterproof-jacket",
+      "price_gbp": 249,
+      "waterproof": true,
+      "weight_grams": 420,
+      "colours": ["black", "red"],
+      "sizes": ["S", "M", "L", "XL"],
+      "fit": "regular",
+      "description": "Durable alpine waterproof jacket with reinforced shoulders."
+    },
+    {
+      "id": "stormguard-heavy",
+      "name": "StormGuard Heavy",
+      "category": "waterproof-jacket",
+      "price_gbp": 199,
+      "waterproof": true,
+      "weight_grams": 580,
+      "colours": ["black", "navy"],
+      "sizes": ["M", "L", "XL", "XXL"],
+      "fit": "relaxed",
+      "description": "Heavy-duty waterproof parka for winter conditions."
+    },
+    {
+      "id": "summit-bright",
+      "name": "Summit Bright",
+      "category": "waterproof-jacket",
+      "price_gbp": 175,
+      "waterproof": true,
+      "weight_grams": 390,
+      "colours": ["yellow", "orange", "pink"],
+      "sizes": ["S", "M", "L"],
+      "fit": "regular",
+      "description": "High-visibility waterproof jacket for trail safety."
+    },
+    {
+      "id": "trail-lite-shell",
+      "name": "TrailLite Shell",
+      "category": "waterproof-jacket",
+      "price_gbp": 159,
+      "waterproof": true,
+      "weight_grams": 360,
+      "colours": ["navy", "grey"],
+      "sizes": ["XS", "S"],
+      "fit": "regular",
+      "description": "Entry-level waterproof shell in smaller sizes only."
+    },
+    {
+      "id": "coastal-wind",
+      "name": "Coastal Wind",
+      "category": "waterproof-jacket",
+      "price_gbp": 145,
+      "waterproof": true,
+      "weight_grams": 400,
+      "colours": ["teal", "coral"],
+      "sizes": ["M", "L", "XL"],
+      "fit": "relaxed",
+      "description": "Waterproof coastal walking jacket with bright colour options."
+    },
+    {
+      "id": "expedition-max",
+      "name": "Expedition Max",
+      "category": "waterproof-jacket",
+      "price_gbp": 299,
+      "waterproof": true,
+      "weight_grams": 650,
+      "colours": ["black", "navy", "grey"],
+      "sizes": ["L", "XL", "XXL"],
+      "fit": "relaxed",
+      "description": "Expedition-weight waterproof jacket without size M."
+    },
+    {
+      "id": "breeze-softshell",
+      "name": "Breeze Softshell",
+      "category": "softshell-jacket",
+      "price_gbp": 120,
+      "waterproof": false,
+      "weight_grams": 280,
+      "colours": ["grey", "blue"],
+      "sizes": ["S", "M", "L", "XL"],
+      "fit": "regular",
+      "description": "Wind-resistant softshell, not fully waterproof."
+    },
+    {
+      "id": "glacier-ski-jacket",
+      "name": "Glacier Ski Jacket",
+      "category": "ski-jacket",
+      "price_gbp": 280,
+      "waterproof": true,
+      "weight_grams": 720,
+      "colours": ["white", "blue"],
+      "sizes": ["S", "M", "L"],
+      "fit": "regular",
+      "description": "Insulated ski jacket for resort conditions."
+    }
+  ]
+}

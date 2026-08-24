@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.31.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cogkura-demo-api"
+version = "0.1.0"
+description = "FastAPI backend for the CogKura e-commerce memory demo."
+requires-python = ">=3.11"
+license = "Apache-2.0"
+dependencies = [
+  "cogkura>=0.15.0,<0.16.0",
+  "fastapi>=0.115.0",
+  "pydantic>=2.10.0",
+  "pydantic-settings>=2.6.0",
+  "uvicorn[standard]>=0.32.0",
+  "openai>=1.60.0",
+  "tiktoken>=0.8.0",
+  "httpx>=0.28.0",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=2.3.0",
+  "pytest>=9.1.1",
+  "pytest-asyncio>=1.4.0",
+  "pytest-cov>=7.1.0",
+  "ruff>=0.16.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cogkura_demo"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/cogkura_demo/py.typed" = "cogkura_demo/py.typed"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+mypy_path = "src"
+packages = ["cogkura_demo"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=cogkura_demo --cov-report=term-missing"
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+branch = true
+source = ["cogkura_demo"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

@@ -1,0 +1,1164 @@
+{
+  "events": [
+    {
+      "id": "evt-001",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-01T09:00:00Z",
+      "content": "Alex browsed hiking boots.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-002",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-03T10:00:00Z",
+      "content": "Alex browsed hiking backpacks.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-003",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-05T11:00:00Z",
+      "content": "Alex browsed hiking poles.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-004",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-07T12:00:00Z",
+      "content": "Alex browsed hiking trousers.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-005",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-09T13:00:00Z",
+      "content": "Alex browsed hiking jackets.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-006",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-11T09:00:00Z",
+      "content": "Alex browsed hiking boots.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-007",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-13T10:00:00Z",
+      "content": "Alex browsed hiking backpacks.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-008",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-15T11:00:00Z",
+      "content": "Alex browsed hiking poles.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-009",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-17T12:00:00Z",
+      "content": "Alex browsed hiking trousers.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-010",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-19T13:00:00Z",
+      "content": "Alex browsed hiking jackets.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-011",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-21T09:00:00Z",
+      "content": "Alex browsed hiking boots.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-012",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-02-23T10:00:00Z",
+      "content": "Alex browsed hiking backpacks.",
+      "session_id": "sess-hike-start"
+    },
+    {
+      "id": "evt-013",
+      "type": "purchase",
+      "customer_id": "alex",
+      "occurred_at": "2025-03-18T14:20:00Z",
+      "content": "Alex purchased TrailLite hiking boots in size UK 9.",
+      "session_id": "sess-013",
+      "product_id": "trail-lite-boots",
+      "semantic_facts": [
+        {
+          "predicate": "activity_interest",
+          "object_value": "hiking",
+          "cardinality": "one",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-014",
+      "type": "purchase",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-12T11:05:00Z",
+      "content": "Alex purchased TrailLite hiking trousers in size L.",
+      "session_id": "sess-014",
+      "product_id": "trail-lite-trousers"
+    },
+    {
+      "id": "evt-015",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-10T16:00:00Z",
+      "content": "Alex browsed lightweight jacket listings including RidgeShell 2.",
+      "session_id": "sess-light-jackets"
+    },
+    {
+      "id": "evt-016",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-11T16:00:00Z",
+      "content": "Alex browsed lightweight jacket listings including AeroTrail Pro.",
+      "session_id": "sess-light-jackets"
+    },
+    {
+      "id": "evt-017",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-12T16:00:00Z",
+      "content": "Alex browsed lightweight jacket listings including featherweight shells.",
+      "session_id": "sess-light-jackets"
+    },
+    {
+      "id": "evt-018",
+      "type": "purchase",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-22T10:30:00Z",
+      "content": "Alex purchased a lightweight windbreaker in size L.",
+      "session_id": "sess-018",
+      "product_id": "breeze-windbreaker",
+      "semantic_facts": [
+        {
+          "predicate": "outerwear_weight_preference",
+          "object_value": "lightweight",
+          "cardinality": "one",
+          "polarity": "affirm"
+        },
+        {
+          "predicate": "jacket_size",
+          "object_value": "L",
+          "cardinality": "one",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-019",
+      "type": "positive_outcome",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-04T09:15:00Z",
+      "content": "Alex left a positive review praising how light the windbreaker feels on long hikes.",
+      "session_id": "sess-019",
+      "product_id": "breeze-windbreaker"
+    },
+    {
+      "id": "evt-020",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-30T19:00:00Z",
+      "content": "Alex compared waterproof shells including NorthPeak Alpine Shell.",
+      "session_id": "sess-020",
+      "product_id": "northpeak-alpine-shell"
+    },
+    {
+      "id": "evt-021",
+      "type": "purchase",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-02T12:45:00Z",
+      "content": "Alex purchased the NorthPeak Alpine Shell in size L.",
+      "session_id": "sess-021",
+      "product_id": "northpeak-alpine-shell",
+      "semantic_facts": [
+        {
+          "predicate": "jacket_size",
+          "object_value": "L",
+          "cardinality": "one",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-022",
+      "type": "product_return",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-18T10:15:00Z",
+      "content": "Alex returned the NorthPeak Alpine Shell because the sleeves were too short.",
+      "session_id": "sess-022",
+      "product_id": "northpeak-alpine-shell",
+      "reason": "Sleeves were too short",
+      "semantic_facts": [
+        {
+          "predicate": "product_fit_issue",
+          "object_value": "northpeak-alpine-shell:sleeves_too_short",
+          "cardinality": "one",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-023",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-19T15:30:00Z",
+      "content": "Alex contacted support about NorthPeak sleeve length and asked about alternative fits.",
+      "session_id": "sess-support-northpeak",
+      "product_id": "northpeak-alpine-shell"
+    },
+    {
+      "id": "evt-024",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-14T20:00:00Z",
+      "content": "Alex browsed ski jackets briefly.",
+      "session_id": "sess-ski-browse",
+      "product_id": "glacier-ski-jacket",
+      "semantic_facts": [
+        {
+          "predicate": "activity_interest",
+          "object_value": "skiing",
+          "cardinality": "one",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-025",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-15T20:00:00Z",
+      "content": "Alex browsed ski goggles briefly.",
+      "session_id": "sess-ski-browse"
+    },
+    {
+      "id": "evt-026",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-16T20:00:00Z",
+      "content": "Alex browsed ski jackets briefly.",
+      "session_id": "sess-ski-browse",
+      "product_id": "glacier-ski-jacket"
+    },
+    {
+      "id": "evt-027",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-17T20:00:00Z",
+      "content": "Alex browsed ski goggles briefly.",
+      "session_id": "sess-ski-browse"
+    },
+    {
+      "id": "evt-028",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-18T20:00:00Z",
+      "content": "Alex browsed ski jackets briefly.",
+      "session_id": "sess-ski-browse",
+      "product_id": "glacier-ski-jacket"
+    },
+    {
+      "id": "evt-029",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-19T20:00:00Z",
+      "content": "Alex browsed ski goggles briefly.",
+      "session_id": "sess-ski-browse"
+    },
+    {
+      "id": "evt-030",
+      "type": "preference_statement",
+      "customer_id": "alex",
+      "occurred_at": "2026-04-22T18:40:00Z",
+      "content": "Alex said they normally stick to black, navy or grey for jackets.",
+      "session_id": "sess-030",
+      "semantic_facts": [
+        {
+          "predicate": "colour_preference",
+          "object_value": "black",
+          "cardinality": "many",
+          "polarity": "affirm"
+        },
+        {
+          "predicate": "colour_preference",
+          "object_value": "navy",
+          "cardinality": "many",
+          "polarity": "affirm"
+        },
+        {
+          "predicate": "colour_preference",
+          "object_value": "grey",
+          "cardinality": "many",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-031",
+      "type": "preference_statement",
+      "customer_id": "alex",
+      "occurred_at": "2026-06-15T08:50:00Z",
+      "content": "Alex mentioned they have lost some weight and are a medium now.",
+      "session_id": "sess-031",
+      "semantic_facts": [
+        {
+          "predicate": "jacket_size",
+          "object_value": "M",
+          "cardinality": "one",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "evt-032",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-05T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (jackets).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-033",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-06T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (gaiters).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-034",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-07T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (maps).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-035",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-08T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (layers).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-036",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-09T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (jackets).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-037",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-10T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (gaiters).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-038",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-11T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (maps).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-039",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-07-12T12:00:00Z",
+      "content": "Alex browsed waterproof hiking gear for Scotland trips (layers).",
+      "session_id": "sess-scotland-prep"
+    },
+    {
+      "id": "evt-040",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-01T00:00:00Z",
+      "content": "Alex browsed sleeping bag liners.",
+      "session_id": "sess-noise-3"
+    },
+    {
+      "id": "evt-041",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-04T00:00:00Z",
+      "content": "Alex browsed trekking poles.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-042",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-07T01:00:00Z",
+      "content": "Alex browsed compasses.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-043",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-10T03:00:00Z",
+      "content": "Alex asked support about first aid kits.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-044",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-13T06:00:00Z",
+      "content": "Alex browsed insect repellent.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-045",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-16T10:00:00Z",
+      "content": "Alex browsed sun cream.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-046",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-19T15:00:00Z",
+      "content": "Alex browsed camp mugs.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-047",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-22T21:00:00Z",
+      "content": "Alex browsed head torches.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-048",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-26T04:00:00Z",
+      "content": "Alex browsed merino base layers.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-049",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-04-29T04:00:00Z",
+      "content": "Alex browsed dry bags.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-050",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-02T05:00:00Z",
+      "content": "Alex asked support about trekking socks.",
+      "session_id": "sess-noise-4"
+    },
+    {
+      "id": "evt-051",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-05T07:00:00Z",
+      "content": "Alex browsed hydration bladders.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-052",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-08T10:00:00Z",
+      "content": "Alex browsed gaiters.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-053",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-11T14:00:00Z",
+      "content": "Alex browsed beanie hats.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-054",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-14T19:00:00Z",
+      "content": "Alex browsed gloves.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-055",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-18T01:00:00Z",
+      "content": "Alex browsed sleeping bag liners.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-056",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-21T08:00:00Z",
+      "content": "Alex browsed trekking poles.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-057",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-24T08:00:00Z",
+      "content": "Alex asked support about compasses.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-058",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-27T09:00:00Z",
+      "content": "Alex browsed first aid kits.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-059",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-05-30T11:00:00Z",
+      "content": "Alex browsed insect repellent.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-060",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-02T14:00:00Z",
+      "content": "Alex browsed sun cream.",
+      "session_id": "sess-noise-5"
+    },
+    {
+      "id": "evt-061",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-05T18:00:00Z",
+      "content": "Alex browsed camp mugs.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-062",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-08T23:00:00Z",
+      "content": "Alex browsed head torches.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-063",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-12T05:00:00Z",
+      "content": "Alex browsed merino base layers.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-064",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-15T12:00:00Z",
+      "content": "Alex asked support about dry bags.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-065",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-18T12:00:00Z",
+      "content": "Alex browsed trekking socks.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-066",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-21T13:00:00Z",
+      "content": "Alex browsed hydration bladders.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-067",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-24T15:00:00Z",
+      "content": "Alex browsed gaiters.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-068",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-27T18:00:00Z",
+      "content": "Alex browsed beanie hats.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-069",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-06-30T22:00:00Z",
+      "content": "Alex browsed gloves.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-070",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-04T03:00:00Z",
+      "content": "Alex browsed sleeping bag liners.",
+      "session_id": "sess-noise-6"
+    },
+    {
+      "id": "evt-071",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-07T09:00:00Z",
+      "content": "Alex asked support about trekking poles.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-072",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-10T16:00:00Z",
+      "content": "Alex browsed compasses.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-073",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-13T16:00:00Z",
+      "content": "Alex browsed first aid kits.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-074",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-16T17:00:00Z",
+      "content": "Alex browsed insect repellent.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-075",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-19T19:00:00Z",
+      "content": "Alex browsed sun cream.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-076",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-22T22:00:00Z",
+      "content": "Alex browsed camp mugs.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-077",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-26T02:00:00Z",
+      "content": "Alex browsed head torches.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-078",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-07-29T07:00:00Z",
+      "content": "Alex asked support about merino base layers.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-079",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-01T13:00:00Z",
+      "content": "Alex browsed dry bags.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-080",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-04T20:00:00Z",
+      "content": "Alex browsed trekking socks.",
+      "session_id": "sess-noise-7"
+    },
+    {
+      "id": "evt-081",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-07T20:00:00Z",
+      "content": "Alex browsed hydration bladders.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-082",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-10T21:00:00Z",
+      "content": "Alex browsed gaiters.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-083",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-13T23:00:00Z",
+      "content": "Alex browsed beanie hats.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-084",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-17T02:00:00Z",
+      "content": "Alex browsed gloves.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-085",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-20T06:00:00Z",
+      "content": "Alex asked support about sleeping bag liners.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-086",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-23T11:00:00Z",
+      "content": "Alex browsed trekking poles.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-087",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-26T17:00:00Z",
+      "content": "Alex browsed compasses.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-088",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-08-30T00:00:00Z",
+      "content": "Alex browsed first aid kits.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-089",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-02T00:00:00Z",
+      "content": "Alex browsed insect repellent.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-090",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-05T01:00:00Z",
+      "content": "Alex browsed sun cream.",
+      "session_id": "sess-noise-8"
+    },
+    {
+      "id": "evt-091",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-08T03:00:00Z",
+      "content": "Alex browsed camp mugs.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-092",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-11T06:00:00Z",
+      "content": "Alex asked support about head torches.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-093",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-14T10:00:00Z",
+      "content": "Alex browsed merino base layers.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-094",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-17T15:00:00Z",
+      "content": "Alex browsed dry bags.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-095",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-20T21:00:00Z",
+      "content": "Alex browsed trekking socks.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-096",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-24T04:00:00Z",
+      "content": "Alex browsed hydration bladders.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-097",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-27T04:00:00Z",
+      "content": "Alex browsed gaiters.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-098",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-09-30T05:00:00Z",
+      "content": "Alex browsed beanie hats.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-099",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-03T07:00:00Z",
+      "content": "Alex asked support about gloves.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-100",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-06T10:00:00Z",
+      "content": "Alex browsed sleeping bag liners.",
+      "session_id": "sess-noise-9"
+    },
+    {
+      "id": "evt-101",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-09T14:00:00Z",
+      "content": "Alex browsed trekking poles.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-102",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-12T19:00:00Z",
+      "content": "Alex browsed compasses.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-103",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-16T01:00:00Z",
+      "content": "Alex browsed first aid kits.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-104",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-19T08:00:00Z",
+      "content": "Alex browsed insect repellent.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-105",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-22T08:00:00Z",
+      "content": "Alex browsed sun cream.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-106",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-25T09:00:00Z",
+      "content": "Alex asked support about camp mugs.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-107",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-28T11:00:00Z",
+      "content": "Alex browsed head torches.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-108",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-31T14:00:00Z",
+      "content": "Alex browsed merino base layers.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-109",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-03T18:00:00Z",
+      "content": "Alex browsed dry bags.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-110",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-06T23:00:00Z",
+      "content": "Alex browsed trekking socks.",
+      "session_id": "sess-noise-10"
+    },
+    {
+      "id": "evt-111",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-10T05:00:00Z",
+      "content": "Alex browsed hydration bladders.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-112",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-13T12:00:00Z",
+      "content": "Alex browsed gaiters.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-113",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-16T12:00:00Z",
+      "content": "Alex asked support about beanie hats.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-114",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-19T13:00:00Z",
+      "content": "Alex browsed gloves.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-115",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-22T15:00:00Z",
+      "content": "Alex browsed sleeping bag liners.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-116",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-25T18:00:00Z",
+      "content": "Alex browsed trekking poles.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-117",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-11-28T22:00:00Z",
+      "content": "Alex browsed compasses.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-118",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-02T03:00:00Z",
+      "content": "Alex browsed first aid kits.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-119",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-05T09:00:00Z",
+      "content": "Alex browsed insect repellent.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-120",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-08T16:00:00Z",
+      "content": "Alex asked support about sun cream.",
+      "session_id": "sess-noise-11"
+    },
+    {
+      "id": "evt-121",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-11T16:00:00Z",
+      "content": "Alex browsed camp mugs.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-122",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-14T17:00:00Z",
+      "content": "Alex browsed head torches.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-123",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-17T19:00:00Z",
+      "content": "Alex browsed merino base layers.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-124",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-20T22:00:00Z",
+      "content": "Alex browsed dry bags.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-125",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-24T02:00:00Z",
+      "content": "Alex browsed trekking socks.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-126",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-27T07:00:00Z",
+      "content": "Alex browsed hydration bladders.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-127",
+      "type": "support_interaction",
+      "customer_id": "alex",
+      "occurred_at": "2025-12-30T13:00:00Z",
+      "content": "Alex asked support about gaiters.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-128",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-02T20:00:00Z",
+      "content": "Alex browsed beanie hats.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-129",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-05T20:00:00Z",
+      "content": "Alex browsed gloves.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-130",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-08T21:00:00Z",
+      "content": "Alex browsed sleeping bag liners.",
+      "session_id": "sess-noise-12"
+    },
+    {
+      "id": "evt-131",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-11T23:00:00Z",
+      "content": "Alex browsed trekking poles.",
+      "session_id": "sess-noise-13"
+    },
+    {
+      "id": "evt-132",
+      "type": "browse",
+      "customer_id": "alex",
+      "occurred_at": "2026-01-15T02:00:00Z",
+      "content": "Alex browsed compasses.",
+      "session_id": "sess-noise-13"
+    },
+    {
+      "id": "evt-133",
+      "type": "product_return",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-10T00:00:00Z",
+      "content": "Alex returned ill-fitting gloves.",
+      "session_id": "sess-133",
+      "reason": "Not needed"
+    },
+    {
+      "id": "evt-134",
+      "type": "product_return",
+      "customer_id": "alex",
+      "occurred_at": "2025-10-30T00:00:00Z",
+      "content": "Alex returned duplicate map case.",
+      "session_id": "sess-134",
+      "reason": "Not needed"
+    }
+  ]
+}
