@@ -24,7 +24,7 @@ class LLMClient(Protocol):
         self,
         *,
         system_prompt: str,
-        customer_memory: str,
+        customer_context: str,
         user_message: str,
         products: list[Product],
         assessment_flags: list[str],
@@ -80,19 +80,19 @@ class OpenAIResponsesClient:
         self,
         *,
         system_prompt: str,
-        customer_memory: str,
+        customer_context: str,
         user_message: str,
         products: list[Product],
         assessment_flags: list[str],
     ) -> LLMResponse:
-        memory_block = customer_memory or "(No relevant customer memory selected.)"
+        context_block = customer_context or "(No relevant customer context selected.)"
         product_block = _format_products(products)
         assessment_block = ", ".join(assessment_flags) if assessment_flags else "none"
         input_text = (
             "SYSTEM INSTRUCTIONS\n"
             f"{system_prompt}\n\n"
-            "CUSTOMER MEMORY\n"
-            f"{memory_block}\n\n"
+            "CUSTOMER CONTEXT\n"
+            f"{context_block}\n\n"
             "MEMORY ASSESSMENT FLAGS\n"
             f"{assessment_block}\n\n"
             "CURRENT CUSTOMER MESSAGE\n"

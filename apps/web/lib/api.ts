@@ -1,5 +1,7 @@
 import type {
   ChatResponse,
+  ComparisonRequest,
+  ComparisonResponse,
   DemoStateResponse,
   EventRequest,
   EventResponse,
@@ -46,4 +48,13 @@ export function sendEvent(payload: EventRequest): Promise<EventResponse> {
 
 export function resetDemo(): Promise<ResetResponse> {
   return request<ResetResponse>("/api/reset", { method: "POST" });
+}
+
+export function compareStrategies(
+  payload: ComparisonRequest,
+): Promise<ComparisonResponse> {
+  return request<ComparisonResponse>("/api/compare", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }

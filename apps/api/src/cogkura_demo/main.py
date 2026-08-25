@@ -13,7 +13,9 @@ from fastapi.responses import JSONResponse
 
 from cogkura_demo.agent import AgentService
 from cogkura_demo.catalogue import load_catalogue
+from cogkura_demo.comparison import ComparisonService
 from cogkura_demo.config import Settings, get_settings
+from cogkura_demo.evaluation import ComparisonEvaluator, load_comparison_config
 from cogkura_demo.events import EventService
 from cogkura_demo.interaction_mapper import DemoInteractionMapper, load_interactions
 from cogkura_demo.llm.openai import OpenAIResponsesClient
@@ -27,6 +29,8 @@ from cogkura_demo.models import (
     CatalogueSummary,
     ChatRequest,
     ChatResponse,
+    ComparisonRequest,
+    ComparisonResponse,
     CustomerSummary,
     DemoStateResponse,
     EventRequest,
@@ -77,6 +81,17 @@ class DemoState:
             catalogue=self.catalogue,
             interaction_mapper=self.interaction_mapper,
         )
+        comparison_config = load_comparison_config(settings.data_dir)
+        self.comparison_service = ComparisonService(
+            demo_memory=self.demo_memory,
+            catalogue=self.catalogue,
+            token_counter=self.token_counter,
+            evaluator=ComparisonEvaluator(comparison_config),
+            llm_client=llm_client,
+            model_available=settings.model_available,
+            search_budget_tokens=settings.search_context_budget_tokens,
+            search_max_events=settings.search_max_events,
+        )
 
     async def bootstrap(self) -> None:
         async with self._lock:
@@ -111,7 +126,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="CogKura Demo API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="CogKura Demo API", version="0.3.0", lifespan=lifespan)
 settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
@@ -216,6 +231,20 @@ async def events_endpoint(
             result = await state.event_service.handle_event(payload)
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return result.response
+
+
+@app.post("/api/compare", response_model=ComparisonResponse)
+async def compare_endpoint(
+    payload: ComparisonRequest,
+    state: Annotated[DemoState, Depends(get_demo_state)],
+) -> ComparisonResponse:
+    if not state.ready:
+        raise HTTPException(status_code=503, detail=state.error or "Demo is initialising")
+    if len(payload.message) > state.settings.max_message_length:
+        raise HTTPException(status_code=400, detail="Message too long")
+    async with state._lock:
+        result = await state.comparison_service.compare(payload)
     return result.response
 
 

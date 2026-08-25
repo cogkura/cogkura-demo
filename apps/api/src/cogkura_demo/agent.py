@@ -10,7 +10,7 @@ from cogkura import MemoryContext
 from cogkura_demo.catalogue import Catalogue, Product, waterproof_jacket_candidates
 from cogkura_demo.interaction_mapper import DemoInteractionMapper
 from cogkura_demo.llm.openai import LLMClient, build_system_prompt
-from cogkura_demo.memory import DemoMemory, map_memory_context, map_processing_summary
+from cogkura_demo.memory import DemoMemory, map_processing_summary
 from cogkura_demo.metrics import (
     TokenCounter,
     estimate_full_history_tokens,
@@ -84,6 +84,7 @@ class AgentService:
                 changes = compare_semantic_snapshots(before, after)
                 session.live_events.append(mutation_event)
                 session.memory_changes = changes
+                session.bump_history_version()
                 mutation = MemoryMutationResponse(
                     event=LiveEventSummary(
                         type=mutation_event.type,
@@ -108,7 +109,7 @@ class AgentService:
             as_of=session.clock.current,
         )
         memory_prepare_ms = (time.perf_counter() - memory_start) * 1000.0
-        memory_response = map_memory_context(context)
+        memory_response = self._demo_memory.map_context(context)
 
         product_start = time.perf_counter()
         products = waterproof_jacket_candidates(self._catalogue)
@@ -160,7 +161,7 @@ class AgentService:
         model_start = time.perf_counter()
         llm_response = await self._llm_client.respond(
             system_prompt=build_system_prompt(),
-            customer_memory=memory_response.rendered,
+            customer_context=memory_response.rendered,
             user_message=message,
             products=products,
             assessment_flags=memory_response.assessment.flags,

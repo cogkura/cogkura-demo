@@ -14,6 +14,7 @@ import type {
 } from "@/lib/types";
 
 import { Chat } from "@/components/chat";
+import { ComparisonView } from "@/components/comparison-view";
 import { ContextMetrics } from "@/components/context-metrics";
 import { CustomerSummaryPanel } from "@/components/customer-summary";
 import { CustomerTimeline } from "@/components/customer-timeline";
@@ -30,7 +31,10 @@ const RETURN_REASONS = [
   { id: "changed-mind", label: "Changed my mind" },
 ];
 
+type ViewMode = "live" | "compare";
+
 export default function HomePage() {
+  const [view, setView] = useState<ViewMode>("live");
   const [demo, setDemo] = useState<DemoStateResponse | null>(null);
   const [memory, setMemory] = useState<MemoryContext | null>(null);
   const [metrics, setMetrics] = useState<DemoMetrics | null>(null);
@@ -45,6 +49,7 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
   const [chatKey, setChatKey] = useState(0);
+  const [compareKey, setCompareKey] = useState(0);
   const requestGeneration = useRef(0);
 
   const loadDemo = useCallback(async () => {
@@ -103,6 +108,7 @@ export default function HomePage() {
       setMemoryChanges([]);
       setLearning(null);
       setChatKey((value) => value + 1);
+      setCompareKey((value) => value + 1);
       await loadDemo();
     } catch (resetError) {
       setError(
@@ -139,7 +145,7 @@ export default function HomePage() {
         <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium uppercase tracking-wide text-slate-500">
-              CogKura Demo 0.2.0
+              CogKura Demo 0.3.0
             </p>
             <h1 className="mt-1 text-3xl font-semibold text-slate-900">
               Northstar Outfitters AI Assistant
@@ -160,6 +166,34 @@ export default function HomePage() {
           </button>
         </header>
 
+        <nav
+          aria-label="Demo views"
+          className="mb-6 inline-flex rounded-xl border border-slate-300 bg-white p-1"
+        >
+          <button
+            type="button"
+            onClick={() => setView("live")}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+              view === "live"
+                ? "bg-slate-900 text-white"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            Live Memory
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("compare")}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+              view === "compare"
+                ? "bg-slate-900 text-white"
+                : "text-slate-700 hover:bg-slate-50"
+            }`}
+          >
+            Compare
+          </button>
+        </nav>
+
         <div className="mb-6">
           <CustomerSummaryPanel
             customer={demo.customer}
@@ -167,42 +201,53 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Chat
-            key={chatKey}
+        {view === "live" ? (
+          <>
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Chat
+                key={chatKey}
+                suggestedPrompt={demo.scenario.suggested_prompt}
+                sizeUpdateMessage={demo.scenario.size_update_message}
+                modelAvailable={demo.model_available}
+                disabled={resetting}
+                onSubmit={handleSubmit}
+              />
+              <MemoryContextPanel memory={memory} />
+            </div>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              <ProductOutcomesPanel
+                turnId={turnId}
+                products={products}
+                recommendedProductIds={recommendedProductIds}
+                returnReasons={RETURN_REASONS}
+                disabled={resetting}
+                onOutcome={({ learning: outcome, memoryChanges: changes }) => {
+                  setLearning(outcome);
+                  if (changes.length > 0) {
+                    setMemoryChanges(changes);
+                  }
+                  void loadDemo();
+                }}
+              />
+              <div className="space-y-6">
+                <MemoryChangesPanel changes={memoryChanges} />
+                <LearningOutcomePanel learning={learning} />
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <ContextMetrics metrics={metrics} />
+            </div>
+          </>
+        ) : (
+          <ComparisonView
+            key={compareKey}
             suggestedPrompt={demo.scenario.suggested_prompt}
-            sizeUpdateMessage={demo.scenario.size_update_message}
             modelAvailable={demo.model_available}
             disabled={resetting}
-            onSubmit={handleSubmit}
           />
-          <MemoryContextPanel memory={memory} />
-        </div>
-
-        <div className="mt-6 grid gap-6 lg:grid-cols-2">
-          <ProductOutcomesPanel
-            turnId={turnId}
-            products={products}
-            recommendedProductIds={recommendedProductIds}
-            returnReasons={RETURN_REASONS}
-            disabled={resetting}
-            onOutcome={({ learning: outcome, memoryChanges: changes }) => {
-              setLearning(outcome);
-              if (changes.length > 0) {
-                setMemoryChanges(changes);
-              }
-              void loadDemo();
-            }}
-          />
-          <div className="space-y-6">
-            <MemoryChangesPanel changes={memoryChanges} />
-            <LearningOutcomePanel learning={learning} />
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <ContextMetrics metrics={metrics} />
-        </div>
+        )}
 
         <div className="mt-6">
           <CustomerTimeline

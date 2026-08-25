@@ -114,6 +114,7 @@ class EventService:
         session.live_orders[order_id] = order
         session.live_events.append(event)
         session.live_purchase_count += 1
+        session.bump_history_version()
         session.memory_changes = changes
         session.last_learning = learning.model_dump()
         session.last_mutation = {
@@ -195,6 +196,7 @@ class EventService:
         order.returned_at = occurred_at
         session.live_events.append(event)
         session.live_return_count += 1
+        session.bump_history_version()
         session.memory_changes = changes
         session.last_learning = learning.model_dump()
         session.last_mutation = {"type": "return", "product_id": order.product_id}

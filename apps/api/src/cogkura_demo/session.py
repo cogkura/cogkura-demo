@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from cogkura import MemoryContext
 
 from cogkura_demo.config import DEMO_AS_OF
+from cogkura_demo.context_strategies.base import ComparisonSnapshot
 from cogkura_demo.scenarios import HistoryEvent, ScenarioBundle, TimelineEventRecord
 
 
@@ -73,6 +74,8 @@ class DemoSession:
     live_order_counter: int = 0
     live_purchase_count: int = 0
     live_return_count: int = 0
+    history_version: int = 0
+    comparison_counter: int = 0
 
     @property
     def history(self) -> list[HistoryEvent]:
@@ -102,6 +105,18 @@ class DemoSession:
         self.live_order_counter += 1
         return f"demo-order-{self.live_order_counter:03d}"
 
+    def bump_history_version(self) -> None:
+        self.history_version += 1
+
+    def snapshot(self, *, snapshot_id: str) -> ComparisonSnapshot:
+        self.comparison_counter += 1
+        return ComparisonSnapshot(
+            snapshot_id=snapshot_id,
+            as_of=self.clock.current,
+            history=tuple(self.history),
+            history_version=self.history_version,
+        )
+
     def reset(self, bundle: ScenarioBundle) -> None:
         self.seed_bundle = bundle
         self.live_events.clear()
@@ -117,6 +132,8 @@ class DemoSession:
         self.live_order_counter = 0
         self.live_purchase_count = 0
         self.live_return_count = 0
+        self.history_version = 0
+        self.comparison_counter = 0
 
     def build_timeline(self) -> list[TimelineEventRecord]:
         seed = list(self.seed_bundle.scenario.timeline)

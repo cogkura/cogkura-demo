@@ -18,8 +18,8 @@ from cogkura_demo.metrics import CogkuraTokenEstimator, TiktokenCounter
 @dataclass
 class FakeLLM:
     async def respond(self, **kwargs) -> LLMResponse:  # type: ignore[no-untyped-def]
-        assert "customer_memory" in kwargs
-        memory = kwargs["customer_memory"]
+        assert "customer_context" in kwargs
+        memory = kwargs["customer_context"]
         assert "2025-02-03 | browse" not in memory
         return LLMResponse(
             content="Try RidgeShell 2 in medium.",

@@ -207,3 +207,72 @@ export type ReturnReasonOption = {
   id: string;
   label: string;
 };
+
+export type ComparisonMode = "full_history" | "search" | "cogkura";
+
+export type ComparisonContextUnit = {
+  id: string;
+  text: string;
+  source_event_ids: string[];
+  score: number | null;
+  kind: string | null;
+};
+
+export type ComparisonContext = {
+  rendered: string;
+  estimated_tokens: number;
+  units: ComparisonContextUnit[];
+};
+
+export type RelevanceMetrics = {
+  expected_concepts_total: number;
+  expected_concepts_found: number;
+  relevant_concept_coverage: number;
+  excluded_concepts_present: number;
+  relevant_units: number;
+  stale_units: number;
+  unclassified_units: number;
+  tokens_per_relevant_concept: number | null;
+  concepts_found: string[];
+  concepts_missing: string[];
+  stale_concepts_found: string[];
+  concept_labels: Record<string, string>;
+};
+
+export type ComparisonMetrics = {
+  context_tokens: number;
+  context_units: number;
+  context_prepare_ms: number;
+  model_input_tokens: number | null;
+  model_output_tokens: number | null;
+  model_latency_ms: number | null;
+};
+
+export type ComparisonResult = {
+  mode: ComparisonMode;
+  label: string;
+  answer: string | null;
+  context: ComparisonContext;
+  relevance: RelevanceMetrics;
+  metrics: ComparisonMetrics;
+  error: string | null;
+};
+
+export type ComparisonSnapshot = {
+  id: string;
+  as_of: string;
+  history_events: number;
+  history_version: number;
+};
+
+export type ComparisonResponse = {
+  snapshot: ComparisonSnapshot;
+  message: string;
+  products: Product[];
+  results: ComparisonResult[];
+};
+
+export type ComparisonRequest = {
+  message: string;
+  generate_answers?: boolean;
+};

@@ -1,0 +1,42 @@
+{
+  "scenario_id": "waterproof-hiking-jacket",
+  "concepts": [
+    {
+      "id": "outerwear_weight_preference:lightweight",
+      "label": "Prefers lightweight outerwear",
+      "status": "expected",
+      "evidence_event_ids": ["evt-018"]
+    },
+    {
+      "id": "colour_preference:neutral",
+      "label": "Prefers neutral jacket colours",
+      "status": "expected",
+      "evidence_event_ids": ["evt-030"]
+    },
+    {
+      "id": "northpeak_fit_issue",
+      "label": "NorthPeak sleeve fit issue",
+      "status": "expected",
+      "evidence_event_ids": ["evt-022"]
+    },
+    {
+      "id": "hiking_interest",
+      "label": "Hiking interest",
+      "status": "expected",
+      "evidence_event_ids": ["evt-013"]
+    },
+    {
+      "id": "skiing_interest",
+      "label": "Old skiing interest",
+      "status": "excluded",
+      "evidence_event_ids": ["evt-024"]
+    }
+  ],
+  "semantic_slots": [
+    {
+      "id": "jacket_size",
+      "label": "Current jacket size",
+      "predicate": "jacket_size"
+    }
+  ]
+}

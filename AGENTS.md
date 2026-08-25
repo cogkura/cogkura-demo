@@ -82,6 +82,19 @@ Rebuild with a fresh `Memory()` instance and re-seed; do not undo individual act
 - Construct `Memory` with `ComplementaryLearningSemanticConsolidator(minimum_supporting_episodes=1)`.
 - Serialise validity timestamps in UTC in `event_to_observation()`.
 
+### Compare mode (0.3.0)
+
+- Read-only: no observations, purchases, returns, or `learn()` on `POST /api/compare`.
+- Use `context_strategies/` for Full History, Search (BM25), and CogKura adapters. CogKura Compare path must call `prepare_customer_context()` / `prepare_context()`, not custom `recall()` composition.
+- `DemoSession.snapshot()` supplies immutable history for all three strategies; bump `history_version` on live mutations and reset.
+- Comparison LLM calls use neutral `customer_context` only (empty `assessment_flags`). Live Memory keeps assessment flags.
+- `record_context_use` only after successful CogKura generated compare answer (`generate_answers=true`).
+- Evaluation ground truth is application-owned (`data/alex/comparison.json` + dynamic semantic slots). Do not use CogKura scores or BM25 ranks as truth.
+- Map CogKura `observation_evidence_ids` to commerce `source_record_id` before scoring; those IDs are observation UUIDs, not `evt-…` event ids.
+- Do not tune Search/BM25 to beat CogKura. Search must not index evaluation metadata.
+- Full History is Compare-only; Live Memory must still not send full history to the model.
+- Hold `DemoState._lock` for the whole compare request in 0.3.0.
+
 ### API boundary
 
 Return Pydantic demo models from FastAPI, not CogKura internal types.

@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     cors_origin: str = "http://localhost:3000"
 
     cogkura_memory_budget_tokens: int = Field(default=750, alias="COGKURA_MEMORY_BUDGET_TOKENS")
+    search_context_budget_tokens: int = Field(default=750, alias="SEARCH_CONTEXT_BUDGET_TOKENS")
+    search_max_events: int = Field(default=20, alias="SEARCH_MAX_EVENTS")
     max_message_length: int = 2000
 
     data_dir: Path = DATA_DIR

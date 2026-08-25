@@ -74,6 +74,7 @@ class MemoryItemResponse(BaseModel):
     memory_key: str | None = None
     revision_key: str | None = None
     learned_utility: float | None = None
+    source_event_ids: list[str] = Field(default_factory=list)
 
 
 class MemoryAssessmentResponse(BaseModel):
@@ -235,3 +236,70 @@ class HealthResponse(BaseModel):
 class ResetResponse(BaseModel):
     status: Literal["reset"] = "reset"
     ready: bool
+
+
+class ComparisonRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+    generate_answers: bool = True
+
+
+class ComparisonSnapshotResponse(BaseModel):
+    id: str
+    as_of: str
+    history_events: int
+    history_version: int
+
+
+class ComparisonContextUnitResponse(BaseModel):
+    id: str
+    text: str
+    source_event_ids: list[str]
+    score: float | None = None
+    kind: str | None = None
+
+
+class ComparisonContextResponse(BaseModel):
+    rendered: str
+    estimated_tokens: int
+    units: list[ComparisonContextUnitResponse]
+
+
+class RelevanceMetrics(BaseModel):
+    expected_concepts_total: int
+    expected_concepts_found: int
+    relevant_concept_coverage: float
+    excluded_concepts_present: int
+    relevant_units: int
+    stale_units: int
+    unclassified_units: int
+    tokens_per_relevant_concept: float | None = None
+    concepts_found: list[str] = Field(default_factory=list)
+    concepts_missing: list[str] = Field(default_factory=list)
+    stale_concepts_found: list[str] = Field(default_factory=list)
+    concept_labels: dict[str, str] = Field(default_factory=dict)
+
+
+class ComparisonMetrics(BaseModel):
+    context_tokens: int
+    context_units: int
+    context_prepare_ms: float
+    model_input_tokens: int | None = None
+    model_output_tokens: int | None = None
+    model_latency_ms: float | None = None
+
+
+class ComparisonResultResponse(BaseModel):
+    mode: Literal["full_history", "search", "cogkura"]
+    label: str
+    answer: str | None = None
+    context: ComparisonContextResponse
+    relevance: RelevanceMetrics
+    metrics: ComparisonMetrics
+    error: str | None = None
+
+
+class ComparisonResponse(BaseModel):
+    snapshot: ComparisonSnapshotResponse
+    message: str
+    products: list[ProductResponse]
+    results: list[ComparisonResultResponse]

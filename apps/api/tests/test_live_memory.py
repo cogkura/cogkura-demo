@@ -28,7 +28,7 @@ JACKET_PROMPT = (
 @dataclass
 class FakeLLM:
     async def respond(self, **kwargs) -> LLMResponse:  # type: ignore[no-untyped-def]
-        memory = kwargs["customer_memory"].lower()
+        memory = kwargs["customer_context"].lower()
         assert "jacket size l" in memory or "size l" in memory or "large" in memory
         return LLMResponse(
             content="Try RidgeShell 2 in large.",

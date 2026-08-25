@@ -40,6 +40,10 @@ class CogkuraTokenEstimator:
         return max(1, self._counter.count(text))
 
 
+def sort_history_chronologically(events: list[HistoryEvent]) -> list[HistoryEvent]:
+    return sorted(events, key=lambda event: (event.occurred_at, event.id))
+
+
 def serialize_history_line(event: HistoryEvent) -> str:
     date = event.occurred_at.strftime("%Y-%m-%d")
     parts = [date, event.type, event.content]
@@ -50,9 +54,14 @@ def serialize_history_line(event: HistoryEvent) -> str:
     return " | ".join(parts)
 
 
-def serialize_full_history(events: list[HistoryEvent]) -> str:
-    lines = [serialize_history_line(event) for event in events]
+def render_full_history(events: list[HistoryEvent]) -> str:
+    ordered = sort_history_chronologically(events)
+    lines = [serialize_history_line(event) for event in ordered]
     return "\n".join(lines)
+
+
+def serialize_full_history(events: list[HistoryEvent]) -> str:
+    return render_full_history(events)
 
 
 def estimate_full_history_tokens(events: list[HistoryEvent], counter: TokenCounter) -> int:

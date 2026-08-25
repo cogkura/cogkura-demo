@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
 
@@ -9,6 +10,7 @@ from cogkura import LearningFeedback, LearningResult, Memory, MemoryContext, Mem
 from cogkura.algorithms.semantic import ComplementaryLearningSemanticConsolidator
 from cogkura.algorithms.working_memory import TokenEstimator
 from cogkura.models import StoredSemanticMemory
+from cogkura.storage import InMemoryObservationStore
 
 from cogkura_demo.config import CUSTOMER_ID, TENANT_ID
 from cogkura_demo.models import (
@@ -28,9 +30,13 @@ from cogkura_demo.scenarios import (
 from cogkura_demo.session import DemoSession
 
 
-def _create_memory(token_estimator: TokenEstimator) -> Memory:
+def _create_memory(
+    token_estimator: TokenEstimator,
+    observation_store: InMemoryObservationStore,
+) -> Memory:
     return Memory(
         token_estimator=token_estimator,
+        observation_store=observation_store,
         semantic_consolidator=ComplementaryLearningSemanticConsolidator(
             minimum_supporting_episodes=1,
         ),
@@ -48,7 +54,9 @@ class DemoMemory:
         self._data_dir = data_dir
         self._token_estimator = token_estimator
         self._memory_budget_tokens = memory_budget_tokens
-        self._memory = _create_memory(token_estimator)
+        self._observation_store = InMemoryObservationStore()
+        self._memory = _create_memory(token_estimator, self._observation_store)
+        self._event_ids_by_observation: dict[str, str] = {}
         self._session: DemoSession | None = None
 
     @property
@@ -63,32 +71,10 @@ class DemoMemory:
         return self.session.seed_bundle
 
     async def initialise(self) -> DemoSession:
-        bundle = load_scenario_bundle(self._data_dir)
-        validate_seed_history(bundle)
-        self._memory = _create_memory(self._token_estimator)
-        self._session = DemoSession(seed_bundle=bundle)
-        for event in bundle.history:
-            await self._memory.observe(event_to_observation(event))
-        await self._memory.process(
-            tenant_id=TENANT_ID,
-            subject_id=CUSTOMER_ID,
-            as_of=self._session.clock.current,
-        )
-        return self._session
+        return await self._rebuild_from_seed()
 
     async def reset(self) -> DemoSession:
-        bundle = load_scenario_bundle(self._data_dir)
-        validate_seed_history(bundle)
-        self._memory = _create_memory(self._token_estimator)
-        self._session = DemoSession(seed_bundle=bundle)
-        for event in bundle.history:
-            await self._memory.observe(event_to_observation(event))
-        await self._memory.process(
-            tenant_id=TENANT_ID,
-            subject_id=CUSTOMER_ID,
-            as_of=self._session.clock.current,
-        )
-        return self._session
+        return await self._rebuild_from_seed()
 
     async def observe_and_process(
         self,
@@ -97,11 +83,44 @@ class DemoMemory:
         as_of: datetime,
     ) -> MemoryProcessingResult:
         await self._memory.observe(event_to_observation(event))
-        return await self._memory.process(
+        result = await self._memory.process(
             tenant_id=TENANT_ID,
             subject_id=CUSTOMER_ID,
             as_of=as_of,
         )
+        await self._refresh_observation_event_ids()
+        return result
+
+    def map_context(self, context: MemoryContext) -> MemoryContextResponse:
+        return map_memory_context(
+            context,
+            event_ids_by_observation=self._event_ids_by_observation,
+        )
+
+    async def _rebuild_from_seed(self) -> DemoSession:
+        bundle = load_scenario_bundle(self._data_dir)
+        validate_seed_history(bundle)
+        self._observation_store = InMemoryObservationStore()
+        self._memory = _create_memory(self._token_estimator, self._observation_store)
+        self._session = DemoSession(seed_bundle=bundle)
+        for event in bundle.history:
+            await self._memory.observe(event_to_observation(event))
+        await self._memory.process(
+            tenant_id=TENANT_ID,
+            subject_id=CUSTOMER_ID,
+            as_of=self._session.clock.current,
+        )
+        await self._refresh_observation_event_ids()
+        return self._session
+
+    async def _refresh_observation_event_ids(self) -> None:
+        observations = await self._observation_store.list(
+            tenant_id=TENANT_ID,
+            subject_id=CUSTOMER_ID,
+        )
+        self._event_ids_by_observation = {
+            observation.id: observation.source_record_id for observation in observations
+        }
 
     async def prepare_customer_context(
         self,
@@ -177,13 +196,41 @@ def map_processing_summary(result: MemoryProcessingResult) -> ProcessingSummaryR
     )
 
 
-def map_memory_context(context: MemoryContext) -> MemoryContextResponse:
+def _resolve_source_event_ids(
+    observation_ids: Sequence[str],
+    event_ids_by_observation: Mapping[str, str] | None,
+) -> list[str]:
+    if not observation_ids:
+        return []
+    if event_ids_by_observation is None:
+        return list(observation_ids)
+    resolved: list[str] = []
+    seen: set[str] = set()
+    for observation_id in observation_ids:
+        event_id = event_ids_by_observation.get(observation_id)
+        if event_id is None or event_id in seen:
+            continue
+        seen.add(event_id)
+        resolved.append(event_id)
+    return resolved
+
+
+def map_memory_context(
+    context: MemoryContext,
+    *,
+    event_ids_by_observation: Mapping[str, str] | None = None,
+) -> MemoryContextResponse:
     items: list[MemoryItemResponse] = []
     for item in context.items:
         diagnostics = item.recall.diagnostics
         provenance = None
+        source_event_ids: list[str] = []
         if diagnostics is not None and diagnostics.observation_evidence_ids:
-            provenance = ", ".join(diagnostics.observation_evidence_ids[:3])
+            source_event_ids = _resolve_source_event_ids(
+                diagnostics.observation_evidence_ids,
+                event_ids_by_observation,
+            )
+            provenance = ", ".join(source_event_ids[:3])
         retrieval_reason = item.recall.reason
         if provenance:
             if retrieval_reason:
@@ -206,6 +253,7 @@ def map_memory_context(context: MemoryContext) -> MemoryContextResponse:
                 memory_key=item.memory.memory_key,
                 revision_key=revision_key,
                 learned_utility=item.components.learned_utility,
+                source_event_ids=source_event_ids,
             )
         )
     return MemoryContextResponse(

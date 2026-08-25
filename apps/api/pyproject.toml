@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cogkura-demo-api"
-version = "0.2.0"
+version = "0.3.0"
 description = "FastAPI backend for the CogKura e-commerce memory demo."
 requires-python = ">=3.11"
 license = "Apache-2.0"
@@ -17,6 +17,7 @@ dependencies = [
   "openai>=1.60.0",
   "tiktoken>=0.8.0",
   "httpx>=0.28.0",
+  "rank-bm25>=0.2.2",
 ]
 
 [dependency-groups]

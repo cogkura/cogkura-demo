@@ -15,8 +15,9 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - Explainability: inspect which memories CogKura selected
 - Honest token comparison between full-history estimate and CogKura memory context
 - **0.2.0:** live memory mutations (size update), purchase/return simulation, HELPFUL/UNHELPFUL learning diagnostics
+- **0.3.0:** read-only **Compare** view — same question through Full History, Search (BM25), and CogKura with deterministic relevance metrics
 
-For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench).
+For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
 ## 0.2.0 live flow
 
@@ -26,6 +27,20 @@ For systematic evaluation and regression measurement, see [CogKuraBench](https:/
 4. Watch memory changes, learning counters, and live timeline entries update.
 
 See [docs/design-cogkura-demo-0.2.0.md](docs/design-cogkura-demo-0.2.0.md) for validity-window and consolidator decisions.
+
+## 0.3.0 Compare
+
+Use the **Compare** tab to run the same customer question through three memory strategies without mutating session state:
+
+1. **Full History** — every event, chronological, unbounded
+2. **Search (BM25)** — lexical retrieval within a 750-token budget
+3. **CogKura** — bounded working memory via `prepare_context()`
+
+The summary table shows tokens, units, relevant concept coverage, and stale evidence. Optional model answers use the same prompt for all three strategies; only `customer_context` changes.
+
+After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
+
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints and evaluation design.
 
 ## Architecture
 
