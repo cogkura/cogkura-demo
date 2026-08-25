@@ -10,6 +10,7 @@ from pathlib import Path
 OUTPUT = Path(__file__).resolve().parents[1] / "data" / "alex" / "history.json"
 CUSTOMER = "alex"
 START = datetime(2025, 2, 1, 9, 0, tzinfo=UTC)
+SIZE_M_START = datetime(2026, 6, 15, 8, 50, tzinfo=UTC)
 
 
 def iso(dt: datetime) -> str:
@@ -110,6 +111,8 @@ def main() -> None:
                 "object_value": "L",
                 "cardinality": "one",
                 "polarity": "affirm",
+                "valid_from": iso(datetime(2025, 7, 22, 10, 30, tzinfo=UTC)),
+                "valid_until": iso(SIZE_M_START),
             },
         ],
     )
@@ -138,6 +141,8 @@ def main() -> None:
                 "object_value": "L",
                 "cardinality": "one",
                 "polarity": "affirm",
+                "valid_from": iso(datetime(2025, 9, 2, 12, 45, tzinfo=UTC)),
+                "valid_until": iso(SIZE_M_START),
             }
         ],
     )
@@ -222,6 +227,7 @@ def main() -> None:
                 "object_value": "M",
                 "cardinality": "one",
                 "polarity": "affirm",
+                "valid_from": iso(SIZE_M_START),
             }
         ],
     )

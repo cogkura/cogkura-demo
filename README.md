@@ -14,8 +14,18 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - Relevant recall via bounded working memory (not full history in every prompt)
 - Explainability: inspect which memories CogKura selected
 - Honest token comparison between full-history estimate and CogKura memory context
+- **0.2.0:** live memory mutations (size update), purchase/return simulation, HELPFUL/UNHELPFUL learning diagnostics
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench).
+
+## 0.2.0 live flow
+
+1. Run the example jacket prompt (or inspect-only without an API key).
+2. Click **Update size** to reconsolidate `jacket_size` in the same turn.
+3. Use **Simulate customer outcome** to purchase (HELPFUL) or return (UNHELPFUL).
+4. Watch memory changes, learning counters, and live timeline entries update.
+
+See [docs/design-cogkura-demo-0.2.0.md](docs/design-cogkura-demo-0.2.0.md) for validity-window and consolidator decisions.
 
 ## Architecture
 

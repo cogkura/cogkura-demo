@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
@@ -28,6 +28,10 @@ class SemanticFactSpec(BaseModel):
     object_value: str
     cardinality: Literal["one", "many"] = "one"
     polarity: Literal["affirm", "deny"] = "affirm"
+    valid_from: datetime | None = None
+    valid_until: datetime | None = None
+    valid_from_from_event: bool = False
+    valid_until_from_event: bool = False
 
 
 class HistoryEvent(BaseModel):
@@ -89,9 +93,14 @@ def load_scenario_bundle(data_dir: Path) -> ScenarioBundle:
 def event_to_observation(event: HistoryEvent) -> ObservationInput:
     metadata: dict[str, Any] = dict(event.metadata)
     if event.semantic_facts:
-        metadata["semantic_facts"] = [
-            fact.model_dump(exclude_none=True) for fact in event.semantic_facts
-        ]
+        facts: list[dict[str, Any]] = []
+        for fact in event.semantic_facts:
+            payload = fact.model_dump(exclude_none=True)
+            for key in ("valid_from", "valid_until"):
+                if key in payload and isinstance(payload[key], datetime):
+                    payload[key] = payload[key].astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+            facts.append(payload)
+        metadata["semantic_facts"] = facts
     if event.session_id:
         metadata["session_id"] = event.session_id
     if event.product_id:
@@ -111,7 +120,7 @@ def event_to_observation(event: HistoryEvent) -> ObservationInput:
     )
 
 
-def validate_history(bundle: ScenarioBundle) -> None:
+def validate_seed_history(bundle: ScenarioBundle) -> None:
     if not (100 <= len(bundle.history) <= 150):
         msg = f"Expected 100-150 history events, got {len(bundle.history)}"
         raise ValueError(msg)
@@ -122,3 +131,19 @@ def validate_history(bundle: ScenarioBundle) -> None:
         if event.customer_id != CUSTOMER_ID:
             msg = f"Event {event.id} has wrong customer_id"
             raise ValueError(msg)
+
+
+def validate_live_event(event: HistoryEvent, *, current_time: datetime) -> None:
+    if event.customer_id != CUSTOMER_ID:
+        msg = f"Event {event.id} has wrong customer_id"
+        raise ValueError(msg)
+    if event.occurred_at < DEMO_AS_OF:
+        msg = f"Live event {event.id} occurs before DEMO_AS_OF"
+        raise ValueError(msg)
+    if event.occurred_at > current_time:
+        msg = f"Live event {event.id} occurs after session clock"
+        raise ValueError(msg)
+
+
+# Backwards-compatible alias
+validate_history = validate_seed_history

@@ -20,6 +20,8 @@ class TimelineEvent(BaseModel):
     label: str
     detail: str
     occurred_at: str
+    kind: Literal["seed", "customer_statement", "purchase", "return", "live"] = "seed"
+    is_live: bool = False
 
 
 class ScenarioInfo(BaseModel):
@@ -27,6 +29,7 @@ class ScenarioInfo(BaseModel):
     name: str
     suggested_prompt: str
     goal: str
+    size_update_message: str | None = None
 
 
 class HistorySummary(BaseModel):
@@ -47,6 +50,7 @@ class DemoStateResponse(BaseModel):
     catalogue: CatalogueSummary
     model_available: bool
     ready: bool
+    current_time: str
 
 
 class ChatRequest(BaseModel):
@@ -67,6 +71,9 @@ class MemoryItemResponse(BaseModel):
     selection_reason: str | None = None
     rank: int | None = None
     estimated_tokens: int | None = None
+    memory_key: str | None = None
+    revision_key: str | None = None
+    learned_utility: float | None = None
 
 
 class MemoryAssessmentResponse(BaseModel):
@@ -105,22 +112,117 @@ class DemoMetrics(BaseModel):
     product_search_ms: float
     model_latency_ms: float | None = None
     total_latency_ms: float
+    memory_process_ms: float | None = None
+
+
+class MemoryValueChangeResponse(BaseModel):
+    predicate: str
+    before: str | None
+    after: str | None
+    kind: str = "current_value_changed"
+
+
+class ProcessingSummaryResponse(BaseModel):
+    created: int = 0
+    updated: int = 0
+    reinforced: int = 0
+    conflicts: int = 0
+    superseded: int = 0
+    revisions_created: int = 0
+    revisions_updated: int = 0
+
+
+class LiveEventSummary(BaseModel):
+    type: str
+    content: str
+    product_id: str | None = None
+    reason: str | None = None
+
+
+class MemoryMutationResponse(BaseModel):
+    event: LiveEventSummary
+    memory_changes: list[MemoryValueChangeResponse]
+    processing: ProcessingSummaryResponse
+
+
+class LearningChangeResponse(BaseModel):
+    outcome: str
+    helpful: int
+    unhelpful: int
+    incorrect: int
+    memories_reinforced: int
+    associations_reinforced: int
+    association_items_skipped: int
+    reactivated: int
+
+
+class DemoOrderResponse(BaseModel):
+    id: str
+    product_id: str
+    turn_id: str
+    purchased_at: str
+    returned_at: str | None = None
+
+
+class PurchaseEventRequest(BaseModel):
+    event_type: Literal["purchase"] = "purchase"
+    product_id: str
+    turn_id: str
+    client_event_id: str
+
+
+class ReturnEventRequest(BaseModel):
+    event_type: Literal["product_return"] = "product_return"
+    order_id: str
+    reason_id: str
+    client_event_id: str
+
+
+EventRequest = PurchaseEventRequest | ReturnEventRequest
+
+
+class EventResponse(BaseModel):
+    status: Literal["recorded", "duplicate"] = "recorded"
+    event: LiveEventSummary
+    order: DemoOrderResponse | None = None
+    learning: LearningChangeResponse | None = None
+    memory_changes: list[MemoryValueChangeResponse] = Field(default_factory=list)
+    processing: ProcessingSummaryResponse | None = None
+
+
+class SemanticMemorySnapshot(BaseModel):
+    memory_key: str
+    slot_key: str
+    revision_key: str
+    revision_number: int
+    statement: str
+    predicate: str
+    object_value: str
+    status: str
+    valid_from: str | None = None
+    valid_until: str | None = None
 
 
 class ChatCompletedResponse(BaseModel):
     status: Literal["completed"] = "completed"
+    turn_id: str
     message: ChatMessage
     memory: MemoryContextResponse
     products: list[ProductResponse]
     metrics: DemoMetrics
+    mutation: MemoryMutationResponse | None = None
+    recommended_product_ids: list[str] = Field(default_factory=list)
 
 
 class ChatInspectResponse(BaseModel):
     status: Literal["model_unavailable"] = "model_unavailable"
+    turn_id: str
     memory: MemoryContextResponse
     products: list[ProductResponse]
     metrics: DemoMetrics
     detail: str = "Set OPENAI_API_KEY to run the AI response."
+    mutation: MemoryMutationResponse | None = None
+    recommended_product_ids: list[str] = Field(default_factory=list)
 
 
 ChatResponse = ChatCompletedResponse | ChatInspectResponse

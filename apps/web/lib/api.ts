@@ -1,6 +1,8 @@
 import type {
   ChatResponse,
   DemoStateResponse,
+  EventRequest,
+  EventResponse,
   ResetResponse,
 } from "./types";
 
@@ -32,6 +34,13 @@ export function sendChatMessage(message: string): Promise<ChatResponse> {
   return request<ChatResponse>("/api/chat", {
     method: "POST",
     body: JSON.stringify({ message }),
+  });
+}
+
+export function sendEvent(payload: EventRequest): Promise<EventResponse> {
+  return request<EventResponse>("/api/events", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
 }
 

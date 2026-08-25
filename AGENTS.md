@@ -13,7 +13,7 @@ CogKura owns memory. The demo owns synthetic commerce data, observations, catalo
 ```text
 apps/api/src/cogkura_demo/   # FastAPI backend
 apps/web/                    # Next.js frontend
-data/alex/                   # customer, history, scenario JSON
+data/alex/                   # customer, history, scenario, interactions JSON
 data/catalogue.json          # product catalogue
 docs/                        # design notes
 ```
@@ -73,6 +73,15 @@ Call only after a successful model response that consumed the context. Not for i
 
 Rebuild with a fresh `Memory()` instance and re-seed; do not undo individual activation references.
 
+### Live session (0.2.0)
+
+- `DemoSession` + `DemoClock` own live events, orders, turn records, and idempotent client event IDs.
+- Thread `session.clock.current` into `process`, `prepare_context` (`as_of` / `valid_at`), `record_context_use(referenced_at=...)`, and `learn(occurred_at=...)`. Never use `datetime.now()` for cognitive events.
+- Configured customer statements map through `DemoInteractionMapper` and observe/process in the same turn before `prepare_context`.
+- `POST /api/events` applies purchase/return observations and HELPFUL/UNHELPFUL learning against the stored turn context.
+- Construct `Memory` with `ComplementaryLearningSemanticConsolidator(minimum_supporting_episodes=1)`.
+- Serialise validity timestamps in UTC in `event_to_observation()`.
+
 ### API boundary
 
 Return Pydantic demo models from FastAPI, not CogKura internal types.
@@ -81,7 +90,7 @@ Return Pydantic demo models from FastAPI, not CogKura internal types.
 
 - Commit `.env` or API keys
 - Expose `OPENAI_API_KEY` to Next.js
-- Add LangChain, LlamaIndex, agent frameworks, or a database for 0.1.0
+- Add LangChain, LlamaIndex, agent frameworks, or a database
 - Move demo-specific logic into the cogkura package
 
 ## Do not commit unless asked

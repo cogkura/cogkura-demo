@@ -29,7 +29,7 @@ export function ContextMetrics({ metrics }: Props) {
             {metrics.history_events} events
           </p>
           <p className="mt-1 text-sm text-slate-600">
-            ~{metrics.estimated_full_history_tokens.toLocaleString()} estimated tokens
+            ~{metrics.estimated_full_history_tokens.toLocaleString("en-GB")} estimated tokens
           </p>
         </div>
         <div className="text-center text-sm font-medium text-slate-500">CogKura</div>
@@ -41,7 +41,7 @@ export function ContextMetrics({ metrics }: Props) {
             {metrics.memory_items} memories
           </p>
           <p className="mt-1 text-sm text-emerald-800">
-            ~{metrics.memory_context_tokens.toLocaleString()} estimated tokens
+            ~{metrics.memory_context_tokens.toLocaleString("en-GB")} estimated tokens
           </p>
         </div>
       </div>
@@ -57,13 +57,13 @@ export function ContextMetrics({ metrics }: Props) {
           <div>
             <dt className="text-slate-500">Input</dt>
             <dd className="font-medium">
-              {metrics.model_input_tokens?.toLocaleString() ?? "—"} tokens
+              {metrics.model_input_tokens?.toLocaleString("en-GB") ?? "—"} tokens
             </dd>
           </div>
           <div>
             <dt className="text-slate-500">Output</dt>
             <dd className="font-medium">
-              {metrics.model_output_tokens?.toLocaleString() ?? "—"} tokens
+              {metrics.model_output_tokens?.toLocaleString("en-GB") ?? "—"} tokens
             </dd>
           </div>
           <div>

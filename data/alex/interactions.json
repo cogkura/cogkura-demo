@@ -1,0 +1,59 @@
+{
+  "statements": [
+    {
+      "id": "size-large",
+      "label": "Update jacket size",
+      "message": "Actually, I'm back to a large now.",
+      "event_type": "preference_statement",
+      "content_template": "Alex said they are back to a large jacket size now.",
+      "semantic_facts": [
+        {
+          "predicate": "jacket_size",
+          "object_value": "l",
+          "cardinality": "one",
+          "polarity": "affirm",
+          "valid_from_from_event": true
+        }
+      ]
+    }
+  ],
+  "return_reasons": [
+    {
+      "id": "hood-too-restrictive",
+      "label": "Hood feels too restrictive",
+      "reason": "The hood feels too restrictive.",
+      "semantic_facts": [
+        {
+          "predicate": "product_fit_issue",
+          "object_value": "ridge-shell-2:hood_too_restrictive",
+          "cardinality": "many",
+          "polarity": "affirm"
+        }
+      ]
+    },
+    {
+      "id": "sleeves-too-short",
+      "label": "Sleeves are too short",
+      "reason": "Sleeves are too short",
+      "semantic_facts": []
+    },
+    {
+      "id": "too-heavy",
+      "label": "Too heavy",
+      "reason": "Too heavy",
+      "semantic_facts": []
+    },
+    {
+      "id": "colour-wrong",
+      "label": "Colour wasn't right",
+      "reason": "Colour wasn't right",
+      "semantic_facts": []
+    },
+    {
+      "id": "changed-mind",
+      "label": "Changed my mind",
+      "reason": "Changed my mind",
+      "semantic_facts": []
+    }
+  ]
+}

@@ -11,6 +11,8 @@ export type TimelineEvent = {
   label: string;
   detail: string;
   occurred_at: string;
+  kind?: string;
+  is_live?: boolean;
 };
 
 export type ScenarioInfo = {
@@ -18,6 +20,7 @@ export type ScenarioInfo = {
   name: string;
   suggested_prompt: string;
   goal: string;
+  size_update_message?: string | null;
 };
 
 export type HistorySummary = {
@@ -38,6 +41,7 @@ export type DemoStateResponse = {
   catalogue: CatalogueSummary;
   model_available: boolean;
   ready: boolean;
+  current_time?: string;
 };
 
 export type MemoryItem = {
@@ -49,6 +53,9 @@ export type MemoryItem = {
   selection_reason: string | null;
   rank: number | null;
   estimated_tokens: number | null;
+  memory_key?: string | null;
+  revision_key?: string | null;
+  learned_utility?: number | null;
 };
 
 export type MemoryAssessment = {
@@ -87,10 +94,61 @@ export type DemoMetrics = {
   product_search_ms: number;
   model_latency_ms: number | null;
   total_latency_ms: number;
+  memory_process_ms?: number | null;
+};
+
+export type MemoryValueChange = {
+  predicate: string;
+  before: string | null;
+  after: string | null;
+  kind: string;
+};
+
+export type ProcessingSummary = {
+  created: number;
+  updated: number;
+  reinforced: number;
+  conflicts: number;
+  superseded: number;
+  revisions_created: number;
+  revisions_updated: number;
+};
+
+export type LiveEventSummary = {
+  type: string;
+  content: string;
+  product_id?: string | null;
+  reason?: string | null;
+};
+
+export type MemoryMutation = {
+  event: LiveEventSummary;
+  memory_changes: MemoryValueChange[];
+  processing: ProcessingSummary;
+};
+
+export type LearningChange = {
+  outcome: string;
+  helpful: number;
+  unhelpful: number;
+  incorrect: number;
+  memories_reinforced: number;
+  associations_reinforced: number;
+  association_items_skipped: number;
+  reactivated: number;
+};
+
+export type DemoOrder = {
+  id: string;
+  product_id: string;
+  turn_id: string;
+  purchased_at: string;
+  returned_at?: string | null;
 };
 
 export type ChatCompletedResponse = {
   status: "completed";
+  turn_id: string;
   message: {
     role: "assistant";
     content: string;
@@ -98,19 +156,54 @@ export type ChatCompletedResponse = {
   memory: MemoryContext;
   products: Product[];
   metrics: DemoMetrics;
+  mutation?: MemoryMutation | null;
+  recommended_product_ids: string[];
 };
 
 export type ChatInspectResponse = {
   status: "model_unavailable";
+  turn_id: string;
   memory: MemoryContext;
   products: Product[];
   metrics: DemoMetrics;
   detail: string;
+  mutation?: MemoryMutation | null;
+  recommended_product_ids: string[];
 };
 
 export type ChatResponse = ChatCompletedResponse | ChatInspectResponse;
 
+export type PurchaseEventRequest = {
+  event_type: "purchase";
+  product_id: string;
+  turn_id: string;
+  client_event_id: string;
+};
+
+export type ReturnEventRequest = {
+  event_type: "product_return";
+  order_id: string;
+  reason_id: string;
+  client_event_id: string;
+};
+
+export type EventRequest = PurchaseEventRequest | ReturnEventRequest;
+
+export type EventResponse = {
+  status: "recorded" | "duplicate";
+  event: LiveEventSummary;
+  order?: DemoOrder | null;
+  learning?: LearningChange | null;
+  memory_changes: MemoryValueChange[];
+  processing?: ProcessingSummary | null;
+};
+
 export type ResetResponse = {
   status: "reset";
   ready: boolean;
+};
+
+export type ReturnReasonOption = {
+  id: string;
+  label: string;
 };

@@ -38,6 +38,12 @@ export function MemoryItemCard({ item, showDetails = false }: Props) {
               <dd>{item.selection_reason}</dd>
             </div>
           ) : null}
+          {item.learned_utility !== null && item.learned_utility !== undefined ? (
+            <div>
+              <dt className="inline font-medium">Learned utility: </dt>
+              <dd className="inline">{item.learned_utility.toFixed(3)}</dd>
+            </div>
+          ) : null}
         </dl>
       ) : null}
     </article>

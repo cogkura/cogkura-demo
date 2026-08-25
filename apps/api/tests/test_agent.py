@@ -9,6 +9,7 @@ import pytest
 from cogkura_demo.agent import AgentService
 from cogkura_demo.catalogue import load_catalogue
 from cogkura_demo.config import DATA_DIR
+from cogkura_demo.interaction_mapper import DemoInteractionMapper, load_interactions
 from cogkura_demo.llm.openai import LLMResponse
 from cogkura_demo.memory import DemoMemory
 from cogkura_demo.metrics import CogkuraTokenEstimator, TiktokenCounter
@@ -18,7 +19,6 @@ from cogkura_demo.metrics import CogkuraTokenEstimator, TiktokenCounter
 class FakeLLM:
     async def respond(self, **kwargs) -> LLMResponse:  # type: ignore[no-untyped-def]
         assert "customer_memory" in kwargs
-        assert "hiking" not in kwargs["customer_memory"].lower() or kwargs["customer_memory"]
         memory = kwargs["customer_memory"]
         assert "2025-02-03 | browse" not in memory
         return LLMResponse(
@@ -38,12 +38,14 @@ async def agent_with_fake_llm() -> AgentService:
         memory_budget_tokens=750,
     )
     await demo_memory.initialise()
+    interaction_mapper = DemoInteractionMapper(load_interactions(DATA_DIR))
     return AgentService(
         demo_memory=demo_memory,
         catalogue=load_catalogue(DATA_DIR),
         token_counter=counter,
         llm_client=FakeLLM(),
         model_available=True,
+        interaction_mapper=interaction_mapper,
     )
 
 
@@ -54,6 +56,7 @@ async def test_agent_completed_response(agent_with_fake_llm: AgentService) -> No
     assert result.response.status == "completed"
     assert result.response.message.content
     assert result.response.metrics.model_input_tokens == 100
+    assert result.response.turn_id == "turn-001"
 
 
 @pytest.mark.asyncio
@@ -65,13 +68,15 @@ async def test_agent_inspect_only() -> None:
         memory_budget_tokens=750,
     )
     await demo_memory.initialise()
+    interaction_mapper = DemoInteractionMapper(load_interactions(DATA_DIR))
     agent = AgentService(
         demo_memory=demo_memory,
         catalogue=load_catalogue(DATA_DIR),
         token_counter=counter,
         llm_client=None,
         model_available=False,
+        interaction_mapper=interaction_mapper,
     )
     result = await agent.handle_message("Need a waterproof jacket.")
     assert result.response.status == "model_unavailable"
-    assert result.context is None
+    assert result.context is not None

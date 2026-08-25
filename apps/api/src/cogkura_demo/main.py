@@ -14,6 +14,8 @@ from fastapi.responses import JSONResponse
 from cogkura_demo.agent import AgentService
 from cogkura_demo.catalogue import load_catalogue
 from cogkura_demo.config import Settings, get_settings
+from cogkura_demo.events import EventService
+from cogkura_demo.interaction_mapper import DemoInteractionMapper, load_interactions
 from cogkura_demo.llm.openai import OpenAIResponsesClient
 from cogkura_demo.memory import DemoMemory
 from cogkura_demo.metrics import (
@@ -27,6 +29,8 @@ from cogkura_demo.models import (
     ChatResponse,
     CustomerSummary,
     DemoStateResponse,
+    EventRequest,
+    EventResponse,
     HealthResponse,
     HistorySummary,
     ResetResponse,
@@ -51,6 +55,8 @@ class DemoState:
             memory_budget_tokens=settings.cogkura_memory_budget_tokens,
         )
         self.catalogue = load_catalogue(settings.data_dir)
+        interactions = load_interactions(settings.data_dir)
+        self.interaction_mapper = DemoInteractionMapper(interactions)
         llm_client = None
         if settings.model_available:
             llm_client = OpenAIResponsesClient(
@@ -64,6 +70,12 @@ class DemoState:
             token_counter=self.token_counter,
             llm_client=llm_client,
             model_available=settings.model_available,
+            interaction_mapper=self.interaction_mapper,
+        )
+        self.event_service = EventService(
+            demo_memory=self.demo_memory,
+            catalogue=self.catalogue,
+            interaction_mapper=self.interaction_mapper,
         )
 
     async def bootstrap(self) -> None:
@@ -99,7 +111,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="CogKura Demo API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="CogKura Demo API", version="0.2.0", lifespan=lifespan)
 settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
@@ -127,27 +139,34 @@ async def demo_state_endpoint(
 ) -> DemoStateResponse:
     if not state.ready:
         raise HTTPException(status_code=503, detail=state.error or "Demo is initialising")
-    bundle = state.demo_memory.bundle
-    full_history_tokens = estimate_full_history_tokens(bundle.history, state.token_counter)
+    session = state.demo_memory.session
+    bundle = session.seed_bundle
+    full_history_tokens = estimate_full_history_tokens(session.history, state.token_counter)
     waterproof_count = sum(
         1 for product in state.catalogue.products if product.category == "waterproof-jacket"
     )
+    size_update = next(
+        (item.message for item in state.interaction_mapper.statements if item.id == "size-large"),
+        None,
+    )
+    timeline = session.build_timeline()
     return DemoStateResponse(
         customer=CustomerSummary(
             id=bundle.customer.id,
             name=bundle.customer.name,
             customer_since=bundle.customer.customer_since,
-            order_count=bundle.customer.order_count,
-            return_count=bundle.customer.return_count,
+            order_count=session.order_count,
+            return_count=session.return_count,
         ),
         scenario=ScenarioInfo(
             id=bundle.scenario.id,
             name=bundle.scenario.name,
             suggested_prompt=bundle.scenario.prompt,
             goal=bundle.scenario.goal,
+            size_update_message=size_update,
         ),
         history=HistorySummary(
-            events=len(bundle.history),
+            events=len(session.history),
             estimated_tokens=full_history_tokens,
         ),
         timeline=[
@@ -156,8 +175,10 @@ async def demo_state_endpoint(
                 label=item.label,
                 detail=item.detail,
                 occurred_at=item.occurred_at,
+                kind="live" if "· New" in item.label else "seed",
+                is_live="· New" in item.label,
             )
-            for item in bundle.scenario.timeline
+            for item in timeline
         ],
         catalogue=CatalogueSummary(
             product_count=len(state.catalogue.products),
@@ -165,6 +186,7 @@ async def demo_state_endpoint(
         ),
         model_available=state.settings.model_available,
         ready=state.ready,
+        current_time=session.clock.current.isoformat(),
     )
 
 
@@ -179,6 +201,21 @@ async def chat_endpoint(
         raise HTTPException(status_code=400, detail="Message too long")
     async with state._lock:
         result = await state.agent.handle_message(payload.message)
+    return result.response
+
+
+@app.post("/api/events", response_model=EventResponse)
+async def events_endpoint(
+    payload: EventRequest,
+    state: Annotated[DemoState, Depends(get_demo_state)],
+) -> EventResponse:
+    if not state.ready:
+        raise HTTPException(status_code=503, detail=state.error or "Demo is initialising")
+    async with state._lock:
+        try:
+            result = await state.event_service.handle_event(payload)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
     return result.response
 
 

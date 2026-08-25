@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from cogkura_demo.config import DATA_DIR
+from cogkura_demo.config import DATA_DIR, DEMO_AS_OF
 from cogkura_demo.memory import DemoMemory, map_memory_context
 from cogkura_demo.metrics import CogkuraTokenEstimator, TiktokenCounter
 from cogkura_demo.scenarios import load_scenario_bundle
@@ -28,6 +28,7 @@ async def test_prepare_context_returns_bounded_memory(demo_memory: DemoMemory) -
     context = await demo_memory.prepare_customer_context(
         bundle.scenario.prompt,
         goal=bundle.scenario.goal,
+        as_of=DEMO_AS_OF,
     )
     mapped = map_memory_context(context)
     assert mapped.estimated_tokens <= 750
@@ -43,6 +44,7 @@ async def test_render_excludes_full_history(demo_memory: DemoMemory) -> None:
     context = await demo_memory.prepare_customer_context(
         bundle.scenario.prompt,
         goal=bundle.scenario.goal,
+        as_of=DEMO_AS_OF,
     )
     rendered = context.render()
     assert "camp mugs" not in rendered.lower() or len(rendered) < 5000

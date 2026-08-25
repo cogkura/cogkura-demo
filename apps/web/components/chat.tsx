@@ -11,16 +11,20 @@ type Turn = {
 
 type Props = {
   suggestedPrompt: string;
+  sizeUpdateMessage?: string | null;
   modelAvailable: boolean;
   disabled?: boolean;
   onSubmit: (message: string) => Promise<ChatResponse>;
+  onTurnComplete?: (response: ChatResponse) => void;
 };
 
 export function Chat({
   suggestedPrompt,
+  sizeUpdateMessage,
   modelAvailable,
   disabled = false,
   onSubmit,
+  onTurnComplete,
 }: Props) {
   const [input, setInput] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -41,6 +45,7 @@ export function Chat({
     setInput("");
     try {
       const response = await onSubmit(trimmed);
+      onTurnComplete?.(response);
       if (response.status === "completed") {
         setTurns((current) => [
           ...current,
@@ -60,16 +65,28 @@ export function Chat({
 
   return (
     <section className="flex h-full min-h-[28rem] flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-lg font-semibold text-slate-900">Conversation</h2>
-        <button
-          type="button"
-          disabled={disabled || pending}
-          onClick={() => void submitMessage(suggestedPrompt)}
-          className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-        >
-          Run example
-        </button>
+        <div className="flex flex-wrap gap-2">
+          {sizeUpdateMessage ? (
+            <button
+              type="button"
+              disabled={disabled || pending}
+              onClick={() => void submitMessage(sizeUpdateMessage)}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Update size
+            </button>
+          ) : null}
+          <button
+            type="button"
+            disabled={disabled || pending}
+            onClick={() => void submitMessage(suggestedPrompt)}
+            className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+          >
+            Run example
+          </button>
+        </div>
       </div>
 
       <div className="mt-4 flex-1 space-y-4 overflow-y-auto rounded-xl bg-slate-50 p-4">

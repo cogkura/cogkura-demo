@@ -165,7 +165,9 @@
           "predicate": "jacket_size",
           "object_value": "L",
           "cardinality": "one",
-          "polarity": "affirm"
+          "polarity": "affirm",
+          "valid_from": "2025-07-22T10:30:00Z",
+          "valid_until": "2026-06-15T08:50:00Z"
         }
       ]
     },
@@ -200,7 +202,9 @@
           "predicate": "jacket_size",
           "object_value": "L",
           "cardinality": "one",
-          "polarity": "affirm"
+          "polarity": "affirm",
+          "valid_from": "2025-09-02T12:45:00Z",
+          "valid_until": "2026-06-15T08:50:00Z"
         }
       ]
     },
@@ -330,7 +334,8 @@
           "predicate": "jacket_size",
           "object_value": "M",
           "cardinality": "one",
-          "polarity": "affirm"
+          "polarity": "affirm",
+          "valid_from": "2026-06-15T08:50:00Z"
         }
       ]
     },
