@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     cogkura_memory_budget_tokens: int = Field(default=750, alias="COGKURA_MEMORY_BUDGET_TOKENS")
     search_context_budget_tokens: int = Field(default=750, alias="SEARCH_CONTEXT_BUDGET_TOKENS")
-    search_max_events: int = Field(default=20, alias="SEARCH_MAX_EVENTS")
+    search_max_events: int = Field(default=100, alias="SEARCH_MAX_EVENTS")
     max_message_length: int = 2000
 
     data_dir: Path = DATA_DIR

@@ -56,8 +56,8 @@ export function ComparisonView({
         <p className="mt-2 text-sm text-slate-600">
           Compare read-only context preparation across full history, lexical search,
           and CogKura working memory. No purchases, returns, or learning run here.
-          Relevance scores a labelled gold set of events; unclassified units are
-          still in context.
+          Labelled coverage measures application-defined source evidence; unclassified
+          units may still be useful.
         </p>
       </section>
 

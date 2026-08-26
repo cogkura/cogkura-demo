@@ -70,6 +70,10 @@ class DemoMemory:
     def bundle(self) -> ScenarioBundle:
         return self.session.seed_bundle
 
+    @property
+    def memory_budget_tokens(self) -> int:
+        return self._memory_budget_tokens
+
     async def initialise(self) -> DemoSession:
         return await self._rebuild_from_seed()
 
@@ -225,7 +229,9 @@ def map_memory_context(
         diagnostics = item.recall.diagnostics
         provenance = None
         source_event_ids: list[str] = []
+        raw_observation_ids: list[str] = []
         if diagnostics is not None and diagnostics.observation_evidence_ids:
+            raw_observation_ids = list(diagnostics.observation_evidence_ids)
             source_event_ids = _resolve_source_event_ids(
                 diagnostics.observation_evidence_ids,
                 event_ids_by_observation,
@@ -254,6 +260,7 @@ def map_memory_context(
                 revision_key=revision_key,
                 learned_utility=item.components.learned_utility,
                 source_event_ids=source_event_ids,
+                raw_observation_ids=raw_observation_ids,
             )
         )
     return MemoryContextResponse(

@@ -43,6 +43,8 @@ export function ComparisonCard({ result }: Props) {
         <ComparisonContextPanel
           context={result.context}
           mode={result.mode}
+          relevance={result.relevance}
+          diagnostics={result.diagnostics}
           defaultCollapsed={result.mode === "full_history"}
         />
       </div>

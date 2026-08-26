@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 from typing import Protocol
@@ -40,6 +40,23 @@ class ContextUnit:
     source_event_ids: tuple[str, ...]
     score: float | None = None
     kind: str | None = None
+    activation: float | None = None
+    retrieval_reason: str | None = None
+    raw_observation_ids: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ContextStrategyDiagnostics:
+    budget_tokens: int | None = None
+    used_tokens: int | None = None
+    remaining_tokens: int | None = None
+    selected_units: int | None = None
+    candidate_units: int | None = None
+    unit_cap: int | None = None
+    unit_cap_reached: bool | None = None
+    budget_constrained: bool | None = None
+    corpus_events: int | None = None
+    prompt_budget_tokens: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,6 +67,7 @@ class PreparedCustomerContext:
     units: tuple[ContextUnit, ...]
     prepare_ms: float
     cogkura_context: MemoryContext | None = None
+    diagnostics: ContextStrategyDiagnostics = field(default_factory=ContextStrategyDiagnostics)
 
 
 class CustomerContextStrategy(Protocol):

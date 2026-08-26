@@ -8,10 +8,12 @@ from unittest.mock import AsyncMock
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from cogkura_demo.agent import AgentService
 from cogkura_demo.catalogue import load_catalogue
 from cogkura_demo.comparison import ComparisonService
 from cogkura_demo.config import DATA_DIR, get_settings
 from cogkura_demo.evaluation import ComparisonEvaluator, load_comparison_config
+from cogkura_demo.interaction_mapper import DemoInteractionMapper, load_interactions
 from cogkura_demo.llm.openai import LLMResponse
 from cogkura_demo.main import DemoState, app
 from cogkura_demo.memory import DemoMemory
@@ -104,7 +106,7 @@ async def test_compare_fake_llm_only_customer_context_differs() -> None:
 
 
 @pytest.mark.asyncio
-async def test_record_context_use_only_after_cogkura_generated_success() -> None:
+async def test_compare_never_mutates_memory_state() -> None:
     settings = get_settings()
     counter = TiktokenCounter(settings.openai_model)
     demo_memory = DemoMemory(
@@ -125,12 +127,69 @@ async def test_record_context_use_only_after_cogkura_generated_success() -> None
         search_max_events=settings.search_max_events,
     )
     record_spy = AsyncMock(wraps=demo_memory.record_context_use)
+    observe_spy = AsyncMock(wraps=demo_memory.observe_and_process)
+    learn_spy = AsyncMock(wraps=demo_memory.learn)
     demo_memory.record_context_use = record_spy  # type: ignore[method-assign]
+    demo_memory.observe_and_process = observe_spy  # type: ignore[method-assign]
+    demo_memory.learn = learn_spy  # type: ignore[method-assign]
 
     await service.compare(ComparisonRequest(message=JACKET_PROMPT, generate_answers=True))
-    assert record_spy.await_count == 1
-
     await service.compare(ComparisonRequest(message=JACKET_PROMPT, generate_answers=False))
+    record_spy.assert_not_awaited()
+    observe_spy.assert_not_awaited()
+    learn_spy.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_repeated_compare_keeps_cogkura_memory_identities_stable() -> None:
+    settings = get_settings()
+    counter = TiktokenCounter(settings.openai_model)
+    demo_memory = DemoMemory(
+        data_dir=DATA_DIR,
+        token_estimator=CogkuraTokenEstimator(counter),
+        memory_budget_tokens=settings.cogkura_memory_budget_tokens,
+    )
+    await demo_memory.initialise()
+    service = ComparisonService(
+        demo_memory=demo_memory,
+        catalogue=load_catalogue(DATA_DIR),
+        token_counter=counter,
+        evaluator=ComparisonEvaluator(load_comparison_config(DATA_DIR)),
+        llm_client=None,
+        model_available=False,
+        search_budget_tokens=settings.search_context_budget_tokens,
+        search_max_events=settings.search_max_events,
+    )
+    first = await service.compare(ComparisonRequest(message=JACKET_PROMPT, generate_answers=False))
+    second = await service.compare(ComparisonRequest(message=JACKET_PROMPT, generate_answers=False))
+    first_cog = next(item for item in first.response.results if item.mode == "cogkura")
+    second_cog = next(item for item in second.response.results if item.mode == "cogkura")
+    assert [unit.id for unit in first_cog.context.units] == [
+        unit.id for unit in second_cog.context.units
+    ]
+
+
+@pytest.mark.asyncio
+async def test_live_memory_still_records_context_use() -> None:
+    counter = TiktokenCounter("gpt-4.1-mini")
+    demo_memory = DemoMemory(
+        data_dir=DATA_DIR,
+        token_estimator=CogkuraTokenEstimator(counter),
+        memory_budget_tokens=750,
+    )
+    await demo_memory.initialise()
+    agent = AgentService(
+        demo_memory=demo_memory,
+        catalogue=load_catalogue(DATA_DIR),
+        token_counter=counter,
+        llm_client=ComparisonLLM(),
+        model_available=True,
+        interaction_mapper=DemoInteractionMapper(load_interactions(DATA_DIR)),
+    )
+    record_spy = AsyncMock(wraps=demo_memory.record_context_use)
+    demo_memory.record_context_use = record_spy  # type: ignore[method-assign]
+    result = await agent.handle_message(JACKET_PROMPT)
+    assert result.response.status == "completed"
     assert record_spy.await_count == 1
 
 
@@ -155,5 +214,5 @@ async def test_compare_after_live_size_update_marks_stale_medium(
     assert any(unit["id"].startswith("live-") for unit in full_history["context"]["units"])
     full_relevance = full_history["relevance"]
     assert full_relevance["stale_units"] >= 1
-    assert "jacket_size:M" in full_relevance["stale_concepts_found"]
-    assert "jacket_size:L" in full_relevance["concepts_found"]
+    assert "jacket_size:stale:M" in full_relevance["stale_concepts_found"]
+    assert "jacket_size:current:L" in full_relevance["concepts_found"]

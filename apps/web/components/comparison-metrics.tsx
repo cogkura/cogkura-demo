@@ -5,9 +5,15 @@ type Props = {
   contextUnits: number;
 };
 
+function labelledUnitCount(relevance: RelevanceMetrics): number {
+  return relevance.unit_evaluations.filter(
+    (item) => item.classification !== "unclassified",
+  ).length;
+}
+
 export function ComparisonMetricsPanel({ relevance, contextUnits }: Props) {
   const coveragePercent = Math.round(relevance.relevant_concept_coverage * 100);
-  const mappedUnits = Math.max(0, contextUnits - relevance.unclassified_units);
+  const labelledUnits = labelledUnitCount(relevance);
   const missingLabels = relevance.concepts_missing.map(
     (id) => relevance.concept_labels[id] ?? id,
   );
@@ -15,15 +21,16 @@ export function ComparisonMetricsPanel({ relevance, contextUnits }: Props) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Context relevance
+        Labelled coverage
       </p>
       <p className="mt-2 text-sm font-medium text-slate-900">
-        {contextUnits} in context · {mappedUnits} mapped to labelled evidence ·{" "}
-        {relevance.unclassified_units} not in the gold set
+        {contextUnits} in context · {labelledUnits} labelled units ·{" "}
+        {relevance.unclassified_units} unclassified
       </p>
       <p className="mt-1 text-xs text-slate-500">
-        Unclassified units are still in the prompt. Labelled coverage is a
-        separate gold-set score, not unused memory.
+        Labelled coverage measures application-defined source evidence for
+        customer concepts. Unclassified units may still be useful; the demo does
+        not use an LLM judge.
       </p>
       <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
         <div>

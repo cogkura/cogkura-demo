@@ -7,6 +7,7 @@ import time
 from cogkura_demo.context_strategies.base import (
     ComparisonMode,
     ComparisonSnapshot,
+    ContextStrategyDiagnostics,
     ContextUnit,
     PreparedCustomerContext,
 )
@@ -40,10 +41,23 @@ class CogKuraStrategy:
                 source_event_ids=tuple(item.source_event_ids),
                 score=item.score,
                 kind=item.memory_kind,
+                activation=item.activation,
+                retrieval_reason=item.retrieval_reason,
+                raw_observation_ids=tuple(item.raw_observation_ids),
             )
             for index, item in enumerate(mapped.items)
         )
         prepare_ms = (time.perf_counter() - start) * 1000.0
+        diagnostics = ContextStrategyDiagnostics(
+            budget_tokens=self._demo_memory.memory_budget_tokens,
+            used_tokens=mapped.estimated_tokens,
+            remaining_tokens=max(
+                0,
+                self._demo_memory.memory_budget_tokens - mapped.estimated_tokens,
+            ),
+            selected_units=len(units),
+            prompt_budget_tokens=self._demo_memory.memory_budget_tokens,
+        )
         return PreparedCustomerContext(
             mode=self.mode,
             rendered=mapped.rendered,
@@ -51,4 +65,5 @@ class CogKuraStrategy:
             units=units,
             prepare_ms=round(prepare_ms, 1),
             cogkura_context=context,
+            diagnostics=diagnostics,
         )

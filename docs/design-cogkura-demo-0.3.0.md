@@ -60,4 +60,6 @@ Summary table first (tokens, units, relevant x/y, stale, model input). Full Hist
 
 - Vector search
 - Concurrent compare requests (0.3.0 holds the demo lock for the whole request)
+
+See [0.3.1 comparison hardening](design-cogkura-demo-0.3.1.md) for evaluator fixes and read-only Compare semantics.
 - Merging Compare into chat turn state

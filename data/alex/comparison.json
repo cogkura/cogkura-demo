@@ -5,7 +5,7 @@
       "id": "outerwear_weight_preference:lightweight",
       "label": "Prefers lightweight outerwear",
       "status": "expected",
-      "evidence_event_ids": ["evt-018"]
+      "evidence_event_ids": ["evt-018", "evt-019"]
     },
     {
       "id": "colour_preference:neutral",
@@ -17,19 +17,50 @@
       "id": "northpeak_fit_issue",
       "label": "NorthPeak sleeve fit issue",
       "status": "expected",
-      "evidence_event_ids": ["evt-022"]
+      "evidence_event_ids": ["evt-022", "evt-023"]
     },
     {
       "id": "hiking_interest",
       "label": "Hiking interest",
       "status": "expected",
-      "evidence_event_ids": ["evt-013"]
+      "evidence_event_ids": [
+        "evt-001",
+        "evt-002",
+        "evt-003",
+        "evt-004",
+        "evt-005",
+        "evt-006",
+        "evt-007",
+        "evt-008",
+        "evt-009",
+        "evt-010",
+        "evt-011",
+        "evt-012",
+        "evt-013",
+        "evt-014",
+        "evt-019",
+        "evt-032",
+        "evt-033",
+        "evt-034",
+        "evt-035",
+        "evt-036",
+        "evt-037",
+        "evt-038",
+        "evt-039"
+      ]
     },
     {
       "id": "skiing_interest",
       "label": "Old skiing interest",
       "status": "excluded",
-      "evidence_event_ids": ["evt-024"]
+      "evidence_event_ids": [
+        "evt-024",
+        "evt-025",
+        "evt-026",
+        "evt-027",
+        "evt-028",
+        "evt-029"
+      ]
     }
   ],
   "semantic_slots": [

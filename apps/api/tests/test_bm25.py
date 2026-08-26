@@ -44,6 +44,69 @@ async def test_search_stays_within_budget() -> None:
     )
     assert prepared.estimated_tokens <= settings.search_context_budget_tokens
     assert len(prepared.units) <= settings.search_max_events
+    assert prepared.diagnostics.budget_constrained is True
+    assert prepared.diagnostics.unit_cap_reached is False
+
+
+@pytest.mark.asyncio
+async def test_default_search_not_limited_by_event_cap() -> None:
+    settings = get_settings()
+    assert settings.search_max_events == 100
+    bundle = load_scenario_bundle(DATA_DIR)
+    counter = TiktokenCounter("gpt-4.1-mini")
+    strategy = Bm25SearchStrategy(
+        token_counter=counter,
+        catalogue=load_catalogue(DATA_DIR),
+        budget_tokens=settings.search_context_budget_tokens,
+        max_events=settings.search_max_events,
+    )
+    prepared = await strategy.prepare(
+        message=JACKET_PROMPT,
+        goal=bundle.scenario.goal,
+        snapshot=_snapshot(bundle.history),
+    )
+    assert prepared.diagnostics.unit_cap_reached is False
+    assert prepared.diagnostics.budget_constrained is True
+
+
+@pytest.mark.asyncio
+async def test_search_event_cap_diagnostics() -> None:
+    bundle = load_scenario_bundle(DATA_DIR)
+    counter = TiktokenCounter("gpt-4.1-mini")
+    strategy = Bm25SearchStrategy(
+        token_counter=counter,
+        catalogue=load_catalogue(DATA_DIR),
+        budget_tokens=10_000,
+        max_events=2,
+    )
+    prepared = await strategy.prepare(
+        message=JACKET_PROMPT,
+        goal=bundle.scenario.goal,
+        snapshot=_snapshot(bundle.history),
+    )
+    assert prepared.diagnostics.unit_cap_reached is True
+    assert prepared.diagnostics.budget_constrained is False
+    assert len(prepared.units) == 2
+
+
+@pytest.mark.asyncio
+async def test_search_budget_diagnostics() -> None:
+    bundle = load_scenario_bundle(DATA_DIR)
+    counter = TiktokenCounter("gpt-4.1-mini")
+    strategy = Bm25SearchStrategy(
+        token_counter=counter,
+        catalogue=load_catalogue(DATA_DIR),
+        budget_tokens=50,
+        max_events=100,
+    )
+    prepared = await strategy.prepare(
+        message=JACKET_PROMPT,
+        goal=bundle.scenario.goal,
+        snapshot=_snapshot(bundle.history),
+    )
+    assert prepared.diagnostics.budget_constrained is True
+    assert prepared.diagnostics.unit_cap_reached is False
+    assert prepared.estimated_tokens <= 50
 
 
 @pytest.mark.asyncio

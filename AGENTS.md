@@ -82,18 +82,21 @@ Rebuild with a fresh `Memory()` instance and re-seed; do not undo individual act
 - Construct `Memory` with `ComplementaryLearningSemanticConsolidator(minimum_supporting_episodes=1)`.
 - Serialise validity timestamps in UTC in `event_to_observation()`.
 
-### Compare mode (0.3.0)
+### Compare mode (0.3.0+)
 
 - Read-only: no observations, purchases, returns, or `learn()` on `POST /api/compare`.
 - Use `context_strategies/` for Full History, Search (BM25), and CogKura adapters. CogKura Compare path must call `prepare_customer_context()` / `prepare_context()`, not custom `recall()` composition.
 - `DemoSession.snapshot()` supplies immutable history for all three strategies; bump `history_version` on live mutations and reset.
 - Comparison LLM calls use neutral `customer_context` only (empty `assessment_flags`). Live Memory keeps assessment flags.
-- `record_context_use` only after successful CogKura generated compare answer (`generate_answers=true`).
+- Compare must not call `observe()`, `process()`, `learn()`, or `record_context_use()`. Live Memory still calls `record_context_use()` after a successful model response.
 - Evaluation ground truth is application-owned (`data/alex/comparison.json` + dynamic semantic slots). Do not use CogKura scores or BM25 ranks as truth.
+- Never add evidence because a strategy happened to retrieve it. Evidence is chosen from source semantics first.
+- Current and historical semantic values are distinct concept IDs (`jacket_size:current:L` vs `jacket_size:stale:L`). A historical assertion of the same value must not satisfy current-state coverage.
 - Map CogKura `observation_evidence_ids` to commerce `source_record_id` before scoring; those IDs are observation UUIDs, not `evt-…` event ids.
-- Do not tune Search/BM25 to beat CogKura. Search must not index evaluation metadata.
+- Do not tune Search/BM25 to beat CogKura. Search must not index evaluation metadata. Search budget fairness must be observable (`budget_constrained`, `unit_cap_reached`).
+- Do not repair CogKura recall in demo code. Genuine retrieval failures become CogKura/CogKuraBench findings.
 - Full History is Compare-only; Live Memory must still not send full history to the model.
-- Hold `DemoState._lock` for the whole compare request in 0.3.0.
+- Hold `DemoState._lock` for the whole compare request.
 
 ### API boundary
 

@@ -75,6 +75,7 @@ class MemoryItemResponse(BaseModel):
     revision_key: str | None = None
     learned_utility: float | None = None
     source_event_ids: list[str] = Field(default_factory=list)
+    raw_observation_ids: list[str] = Field(default_factory=list)
 
 
 class MemoryAssessmentResponse(BaseModel):
@@ -256,12 +257,35 @@ class ComparisonContextUnitResponse(BaseModel):
     source_event_ids: list[str]
     score: float | None = None
     kind: str | None = None
+    activation: float | None = None
+    retrieval_reason: str | None = None
 
 
 class ComparisonContextResponse(BaseModel):
     rendered: str
     estimated_tokens: int
     units: list[ComparisonContextUnitResponse]
+
+
+class ContextStrategyDiagnosticsResponse(BaseModel):
+    budget_tokens: int | None = None
+    used_tokens: int | None = None
+    remaining_tokens: int | None = None
+    selected_units: int | None = None
+    candidate_units: int | None = None
+    unit_cap: int | None = None
+    unit_cap_reached: bool | None = None
+    budget_constrained: bool | None = None
+    corpus_events: int | None = None
+    prompt_budget_tokens: int | None = None
+
+
+class UnitEvaluation(BaseModel):
+    unit_id: str
+    expected_concepts: list[str] = Field(default_factory=list)
+    excluded_concepts: list[str] = Field(default_factory=list)
+    classification: Literal["relevant", "stale", "relevant_and_stale", "unclassified"]
+    provenance_status: Literal["resolved", "unresolved", "n_a"] = "n_a"
 
 
 class RelevanceMetrics(BaseModel):
@@ -277,6 +301,7 @@ class RelevanceMetrics(BaseModel):
     concepts_missing: list[str] = Field(default_factory=list)
     stale_concepts_found: list[str] = Field(default_factory=list)
     concept_labels: dict[str, str] = Field(default_factory=dict)
+    unit_evaluations: list[UnitEvaluation] = Field(default_factory=list)
 
 
 class ComparisonMetrics(BaseModel):
@@ -295,6 +320,7 @@ class ComparisonResultResponse(BaseModel):
     context: ComparisonContextResponse
     relevance: RelevanceMetrics
     metrics: ComparisonMetrics
+    diagnostics: ContextStrategyDiagnosticsResponse | None = None
     error: str | None = None
 
 

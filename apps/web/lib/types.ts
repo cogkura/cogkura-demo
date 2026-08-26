@@ -216,12 +216,22 @@ export type ComparisonContextUnit = {
   source_event_ids: string[];
   score: number | null;
   kind: string | null;
+  activation?: number | null;
+  retrieval_reason?: string | null;
 };
 
 export type ComparisonContext = {
   rendered: string;
   estimated_tokens: number;
   units: ComparisonContextUnit[];
+};
+
+export type UnitEvaluation = {
+  unit_id: string;
+  expected_concepts: string[];
+  excluded_concepts: string[];
+  classification: "relevant" | "stale" | "relevant_and_stale" | "unclassified";
+  provenance_status: "resolved" | "unresolved" | "n_a";
 };
 
 export type RelevanceMetrics = {
@@ -237,6 +247,20 @@ export type RelevanceMetrics = {
   concepts_missing: string[];
   stale_concepts_found: string[];
   concept_labels: Record<string, string>;
+  unit_evaluations: UnitEvaluation[];
+};
+
+export type ContextStrategyDiagnostics = {
+  budget_tokens: number | null;
+  used_tokens: number | null;
+  remaining_tokens: number | null;
+  selected_units: number | null;
+  candidate_units: number | null;
+  unit_cap: number | null;
+  unit_cap_reached: boolean | null;
+  budget_constrained: boolean | null;
+  corpus_events: number | null;
+  prompt_budget_tokens: number | null;
 };
 
 export type ComparisonMetrics = {
@@ -255,6 +279,7 @@ export type ComparisonResult = {
   context: ComparisonContext;
   relevance: RelevanceMetrics;
   metrics: ComparisonMetrics;
+  diagnostics: ContextStrategyDiagnostics | null;
   error: string | null;
 };
 

@@ -9,7 +9,6 @@ from uuid import uuid4
 from cogkura_demo.catalogue import Catalogue, Product, waterproof_jacket_candidates
 from cogkura_demo.context_strategies.base import (
     MODE_LABELS,
-    ComparisonMode,
     CustomerContextStrategy,
     PreparedCustomerContext,
 )
@@ -28,6 +27,7 @@ from cogkura_demo.models import (
     ComparisonResponse,
     ComparisonResultResponse,
     ComparisonSnapshotResponse,
+    ContextStrategyDiagnosticsResponse,
     ProductResponse,
 )
 
@@ -116,15 +116,6 @@ class ComparisonService:
                             ),
                         }
                     )
-                    if (
-                        context.mode == ComparisonMode.COGKURA
-                        and context.cogkura_context is not None
-                    ):
-                        await self._demo_memory.record_context_use(
-                            context.cogkura_context,
-                            request_id=llm_response.request_id,
-                            referenced_at=session.clock.current,
-                        )
                 except Exception as exc:  # noqa: BLE001
                     error = str(exc)
             results.append(
@@ -135,6 +126,7 @@ class ComparisonService:
                     context=_map_context(context),
                     relevance=relevance,
                     metrics=metrics,
+                    diagnostics=_map_diagnostics(context),
                     error=error,
                 )
             )
@@ -165,9 +157,45 @@ def _map_context(context: PreparedCustomerContext) -> ComparisonContextResponse:
                 source_event_ids=list(unit.source_event_ids),
                 score=unit.score,
                 kind=unit.kind,
+                activation=unit.activation,
+                retrieval_reason=unit.retrieval_reason,
             )
             for unit in context.units
         ],
+    )
+
+
+def _map_diagnostics(
+    context: PreparedCustomerContext,
+) -> ContextStrategyDiagnosticsResponse | None:
+    diagnostics = context.diagnostics
+    if all(
+        value is None
+        for value in (
+            diagnostics.budget_tokens,
+            diagnostics.used_tokens,
+            diagnostics.remaining_tokens,
+            diagnostics.selected_units,
+            diagnostics.candidate_units,
+            diagnostics.unit_cap,
+            diagnostics.unit_cap_reached,
+            diagnostics.budget_constrained,
+            diagnostics.corpus_events,
+            diagnostics.prompt_budget_tokens,
+        )
+    ):
+        return None
+    return ContextStrategyDiagnosticsResponse(
+        budget_tokens=diagnostics.budget_tokens,
+        used_tokens=diagnostics.used_tokens,
+        remaining_tokens=diagnostics.remaining_tokens,
+        selected_units=diagnostics.selected_units,
+        candidate_units=diagnostics.candidate_units,
+        unit_cap=diagnostics.unit_cap,
+        unit_cap_reached=diagnostics.unit_cap_reached,
+        budget_constrained=diagnostics.budget_constrained,
+        corpus_events=diagnostics.corpus_events,
+        prompt_budget_tokens=diagnostics.prompt_budget_tokens,
     )
 
 

@@ -12,6 +12,7 @@ from cogkura_demo.catalogue import Catalogue
 from cogkura_demo.context_strategies.base import (
     ComparisonMode,
     ComparisonSnapshot,
+    ContextStrategyDiagnostics,
     ContextUnit,
     PreparedCustomerContext,
 )
@@ -55,6 +56,15 @@ class RankedEvent:
     rank: int
 
 
+@dataclass(frozen=True, slots=True)
+class PackingResult:
+    selected: list[RankedEvent]
+    rendered: str
+    used_tokens: int
+    budget_constrained: bool
+    event_cap_reached: bool
+
+
 class Bm25SearchStrategy:
     mode = ComparisonMode.SEARCH
 
@@ -81,7 +91,7 @@ class Bm25SearchStrategy:
         start = time.perf_counter()
         events = sort_history_chronologically(list(snapshot.history))
         ranked = self._rank_events(events=events, goal=goal, message=message)
-        selected, rendered = self._pack_results(ranked)
+        packing = self._pack_results(ranked)
         units = tuple(
             ContextUnit(
                 id=item.event.id,
@@ -90,15 +100,27 @@ class Bm25SearchStrategy:
                 score=round(item.score, 4),
                 kind=item.event.type,
             )
-            for item in selected
+            for item in packing.selected
         )
         prepare_ms = (time.perf_counter() - start) * 1000.0
+        diagnostics = ContextStrategyDiagnostics(
+            budget_tokens=self._budget_tokens,
+            used_tokens=packing.used_tokens,
+            remaining_tokens=max(0, self._budget_tokens - packing.used_tokens),
+            selected_units=len(packing.selected),
+            candidate_units=len(ranked),
+            unit_cap=self._max_events,
+            unit_cap_reached=packing.event_cap_reached,
+            budget_constrained=packing.budget_constrained,
+            corpus_events=len(events),
+        )
         return PreparedCustomerContext(
             mode=self.mode,
-            rendered=rendered,
-            estimated_tokens=self._token_counter.count(rendered),
+            rendered=packing.rendered,
+            estimated_tokens=self._token_counter.count(packing.rendered),
             units=units,
             prepare_ms=round(prepare_ms, 1),
+            diagnostics=diagnostics,
         )
 
     def _rank_events(
@@ -121,21 +143,33 @@ class Bm25SearchStrategy:
             for index, (event, score) in enumerate(scored)
         ]
 
-    def _pack_results(self, ranked: list[RankedEvent]) -> tuple[list[RankedEvent], str]:
+    def _pack_results(self, ranked: list[RankedEvent]) -> PackingResult:
         selected: list[RankedEvent] = []
         lines: list[str] = []
         tokens_so_far = 0
+        budget_constrained = False
+        event_cap_reached = False
+
         for item in ranked:
             if len(selected) >= self._max_events:
+                event_cap_reached = True
                 break
             line = render_search_event(item.event, rank=item.rank)
             line_tokens = self._token_counter.count(line)
             separator_tokens = self._token_counter.count("\n\n") if lines else 0
             if tokens_so_far + separator_tokens + line_tokens > self._budget_tokens:
+                budget_constrained = True
                 continue
             if separator_tokens:
                 tokens_so_far += separator_tokens
             tokens_so_far += line_tokens
             selected.append(item)
             lines.append(line)
-        return selected, "\n\n".join(lines)
+
+        return PackingResult(
+            selected=selected,
+            rendered="\n\n".join(lines),
+            used_tokens=tokens_so_far,
+            budget_constrained=budget_constrained,
+            event_cap_reached=event_cap_reached,
+        )

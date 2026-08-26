@@ -9,8 +9,9 @@ export function ComparisonSummary({ results }: Props) {
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
       <table className="min-w-full text-left text-sm">
         <caption className="px-4 py-3 text-left text-xs text-slate-500">
-          Units are memories or events in context. Labelled coverage scores a
-          small gold set of evidence events, not whether a unit was used.
+          Units are memories or events in context. Labelled coverage scores
+          application-defined source evidence for customer concepts, not whether
+          a unit was used.
         </caption>
         <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
           <tr>
@@ -18,6 +19,7 @@ export function ComparisonSummary({ results }: Props) {
             <th className="px-4 py-3 font-semibold">Context tokens</th>
             <th className="px-4 py-3 font-semibold">Units in context</th>
             <th className="px-4 py-3 font-semibold">Labelled coverage</th>
+            <th className="px-4 py-3 font-semibold">Stale concepts</th>
             <th className="px-4 py-3 font-semibold">Unclassified</th>
             <th className="px-4 py-3 font-semibold">Stale units</th>
             <th className="px-4 py-3 font-semibold">Model input</th>
@@ -38,6 +40,9 @@ export function ComparisonSummary({ results }: Props) {
               <td className="px-4 py-3 text-slate-700">
                 {result.relevance.expected_concepts_found}/
                 {result.relevance.expected_concepts_total}
+              </td>
+              <td className="px-4 py-3 text-slate-700">
+                {result.relevance.excluded_concepts_present}
               </td>
               <td className="px-4 py-3 text-slate-700">
                 {result.relevance.unclassified_units}
