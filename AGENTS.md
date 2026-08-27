@@ -78,7 +78,7 @@ Rebuild with a fresh `Memory()` instance and re-seed; do not undo individual act
 - `DemoSession` + `DemoClock` own live events, orders, turn records, and idempotent client event IDs.
 - Thread `session.clock.current` into `process`, `prepare_context` (`as_of` / `valid_at`), `record_context_use(referenced_at=...)`, and `learn(occurred_at=...)`. Never use `datetime.now()` for cognitive events.
 - Configured customer statements map through `DemoInteractionMapper` and observe/process in the same turn before `prepare_context`.
-- `POST /api/events` applies purchase/return observations and HELPFUL/UNHELPFUL learning against the stored turn context.
+- `POST /api/events` applies purchase/return observations and HELPFUL/UNHELPFUL learning against the stored turn context. Skip `learn()` when that context has no recall results.
 - Construct `Memory` with `ComplementaryLearningSemanticConsolidator(minimum_supporting_episodes=1)`.
 - Serialise validity timestamps in UTC in `event_to_observation()`.
 

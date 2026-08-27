@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
+from datetime import datetime
 
-from cogkura import LearningOutcome
+from cogkura import LearningOutcome, MemoryContext
 
 from cogkura_demo.catalogue import Catalogue
 from cogkura_demo.interaction_mapper import DemoInteractionMapper
@@ -15,6 +16,7 @@ from cogkura_demo.models import (
     DemoOrderResponse,
     EventRequest,
     EventResponse,
+    LearningChangeResponse,
     LiveEventSummary,
     MemoryValueChangeResponse,
     PurchaseEventRequest,
@@ -93,16 +95,12 @@ class EventService:
         after = await self._demo_memory.semantic_snapshot(valid_at=occurred_at)
         changes = compare_semantic_snapshots(before, after)
 
-        feedback_id = f"learn-{request.client_event_id}"
-        learning_result = await self._demo_memory.learn(
-            build_learning_feedback(
-                turn.context,
-                feedback_id=feedback_id,
-                outcome=LearningOutcome.HELPFUL,
-                occurred_at=occurred_at,
-            )
+        learning = await self._learn_from_turn(
+            turn.context,
+            feedback_id=f"learn-{request.client_event_id}",
+            outcome=LearningOutcome.HELPFUL,
+            occurred_at=occurred_at,
         )
-        learning = map_learning_result(learning_result, outcome=LearningOutcome.HELPFUL)
 
         order_id = session.next_order_id()
         order = DemoOrder(
@@ -116,7 +114,7 @@ class EventService:
         session.live_purchase_count += 1
         session.bump_history_version()
         session.memory_changes = changes
-        session.last_learning = learning.model_dump()
+        session.last_learning = learning.model_dump() if learning is not None else None
         session.last_mutation = {
             "type": "purchase",
             "product_id": product.id,
@@ -182,23 +180,19 @@ class EventService:
         after = await self._demo_memory.semantic_snapshot(valid_at=occurred_at)
         changes = compare_semantic_snapshots(before, after)
 
-        feedback_id = f"learn-{request.client_event_id}"
-        learning_result = await self._demo_memory.learn(
-            build_learning_feedback(
-                turn.context,
-                feedback_id=feedback_id,
-                outcome=LearningOutcome.UNHELPFUL,
-                occurred_at=occurred_at,
-            )
+        learning = await self._learn_from_turn(
+            turn.context,
+            feedback_id=f"learn-{request.client_event_id}",
+            outcome=LearningOutcome.UNHELPFUL,
+            occurred_at=occurred_at,
         )
-        learning = map_learning_result(learning_result, outcome=LearningOutcome.UNHELPFUL)
 
         order.returned_at = occurred_at
         session.live_events.append(event)
         session.live_return_count += 1
         session.bump_history_version()
         session.memory_changes = changes
-        session.last_learning = learning.model_dump()
+        session.last_learning = learning.model_dump() if learning is not None else None
         session.last_mutation = {"type": "return", "product_id": order.product_id}
 
         return EventResponse(
@@ -212,6 +206,25 @@ class EventService:
             memory_changes=[_map_change(change) for change in changes],
             processing=map_processing_summary(result),
         )
+
+    async def _learn_from_turn(
+        self,
+        context: MemoryContext,
+        *,
+        feedback_id: str,
+        outcome: LearningOutcome,
+        occurred_at: datetime,
+    ) -> LearningChangeResponse | None:
+        feedback = build_learning_feedback(
+            context,
+            feedback_id=feedback_id,
+            outcome=outcome,
+            occurred_at=occurred_at,
+        )
+        if feedback is None:
+            return None
+        result = await self._demo_memory.learn(feedback)
+        return map_learning_result(result, outcome=outcome)
 
 
 def _map_change(change) -> MemoryValueChangeResponse:  # type: ignore[no-untyped-def]

@@ -17,7 +17,7 @@ def build_learning_feedback(
     feedback_id: str,
     outcome: LearningOutcome,
     occurred_at: datetime,
-) -> LearningFeedback:
+) -> LearningFeedback | None:
     items = tuple(
         MemoryFeedback(
             identity=MemoryIdentity(
@@ -29,8 +29,7 @@ def build_learning_feedback(
         for result in context.recall_results
     )
     if not items:
-        msg = "Cannot apply learning without selected recall results"
-        raise ValueError(msg)
+        return None
     return LearningFeedback(
         tenant_id=TENANT_ID,
         subject_id=CUSTOMER_ID,

@@ -1,12 +1,56 @@
 # Findings — customer decision context (waterproof hiking jacket)
 
-Handoff to CogKuraBench and CogKura core. This document records what the demo proves after fixture normalisation in 0.3.2. It does not propose a core algorithm fix.
+Handoff to CogKuraBench and CogKura core. This document records what the demo proves. It does not propose a core algorithm fix.
 
-## Run metadata
+## 0.15.2 addendum (demo 0.3.4)
 
 | Field | Value |
 |-------|-------|
-| Demo version | 0.3.2 (pending release; captured on working tree after cardinality fix) |
+| Demo version | `0.3.4` |
+| CogKura version | `0.15.2` |
+| CogKura pin | `cogkura>=0.15.2,<0.16.0` |
+| Scenario / clock / budget | Unchanged from the 0.3.2 run below |
+
+Inspect-only Compare after the 0.15.2 bump:
+
+| Strategy | Tokens | Units | Labelled coverage |
+|----------|--------|-------|-------------------|
+| Full History | 2335 | 134 | 5/5 |
+| Search (BM25) | 703 | 34 | 4/5 |
+| CogKura | **17** | **2** | **1/5** |
+
+CogKura `prepare_context()` returns current jacket size M (`evt-031` semantic + supporting episode) via lexical soft admission. Assessment flags: `low_retrieval_strength`, `low_provenance_diversity`. Neither unit is stale. Missing labelled concepts: hiking interest, lightweight outerwear, NorthPeak fit, colour preference.
+
+Inspection of the same cue: 2 returned (soft-admitted, neither passed the global threshold), 1 `filtered_below_soft_floor`, 6 `filtered_insufficient_relevance`, 26 `below_threshold`. Global `retrieval_threshold` remains `-3.0`.
+
+The demo does not lower the threshold or retune ranking.
+
+## 0.15.1 addendum (demo 0.3.3)
+
+| Field | Value |
+|-------|-------|
+| Demo version | `0.3.3` |
+| CogKura version | `0.15.1` |
+| CogKura pin | `cogkura>=0.15.1,<0.16.0` |
+| Scenario / clock / budget | Unchanged from the 0.3.2 run below |
+
+Inspect-only Compare after the 0.15.1 bump:
+
+| Strategy | Tokens | Units | Labelled coverage |
+|----------|--------|-------|-------------------|
+| Full History | 2335 | 134 | 5/5 |
+| Search (BM25) | 703 | 34 | 4/5 |
+| CogKura | **0** | **0** | **0/5** |
+
+CogKura `prepare_context()` returns `no_retrieved_memory`. Inspection of the same cue shows every seed candidate `below_threshold` (highest activation about `-3.34` vs threshold `-3.0`). Traces use historical evidence times (`encoded` / `supported`), not batch materialisation. That matches CogKura 0.15.1's evidence-chronology change. The 0.3.2 / 0.15.0 working-memory occupancy table below is the last non-empty CogKura context captured on this fixture.
+
+The demo does not lower the threshold or retune ranking.
+
+## Run metadata (0.3.2 / CogKura 0.15.0)
+
+| Field | Value |
+|-------|-------|
+| Demo version | 0.3.2 |
 | Demo git commit | `45442c96901cf364751b7df560c35dcec6ae1a79` + fixture changes |
 | CogKura version | `0.15.0` |
 | CogKura pin | `cogkura>=0.15.0,<0.16.0` |
@@ -105,4 +149,4 @@ The demo does **not** establish whether those concepts are absent from broad rec
 
 ## Next step
 
-Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. Investigate why `prepare_context()` working memory favours hiking episodic mass over decision-critical preference and fit-issue memories.
+Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor.

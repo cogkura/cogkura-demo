@@ -164,11 +164,47 @@ async def test_purchase_learning_and_order(
         )
     )
     assert purchase.response.order is not None
-    assert purchase.response.learning is not None
-    assert purchase.response.learning.helpful > 0
+    if chat.response.memory.items:
+        assert purchase.response.learning is not None
+        assert purchase.response.learning.helpful > 0
+    else:
+        assert purchase.response.learning is None
     session = demo_memory.session
     assert session.order_count == session.seed_bundle.customer.order_count + 1
     assert len(session.live_orders) == 1
+
+
+@pytest.mark.asyncio
+async def test_purchase_learns_from_recent_turn_memories(
+    demo_memory: DemoMemory,
+    interaction_mapper: DemoInteractionMapper,
+) -> None:
+    counter = TiktokenCounter("gpt-4.1-mini")
+    agent = AgentService(
+        demo_memory=demo_memory,
+        catalogue=load_catalogue(DATA_DIR),
+        token_counter=counter,
+        llm_client=None,
+        model_available=False,
+        interaction_mapper=interaction_mapper,
+    )
+    await agent.handle_message(SIZE_STATEMENT)
+    chat = await agent.handle_message(JACKET_PROMPT)
+    assert chat.response.memory.items
+    events = EventService(
+        demo_memory=demo_memory,
+        catalogue=load_catalogue(DATA_DIR),
+        interaction_mapper=interaction_mapper,
+    )
+    purchase = await events.handle_event(
+        PurchaseEventRequest(
+            product_id="ridge-shell-2",
+            turn_id=chat.response.turn_id,
+            client_event_id="purchase-recent-context",
+        )
+    )
+    assert purchase.response.learning is not None
+    assert purchase.response.learning.helpful > 0
 
 
 @pytest.mark.asyncio
@@ -206,8 +242,11 @@ async def test_return_learning_and_fit_issue(
             client_event_id="return-1",
         )
     )
-    assert returned.response.learning is not None
-    assert returned.response.learning.unhelpful > 0
+    if chat.response.memory.items:
+        assert returned.response.learning is not None
+        assert returned.response.learning.unhelpful > 0
+    else:
+        assert returned.response.learning is None
     seed_returns = demo_memory.session.seed_bundle.customer.return_count
     assert demo_memory.session.return_count == seed_returns + 1
 
@@ -268,5 +307,8 @@ async def test_reset_clears_live_state(client: AsyncClient) -> None:
     payload = demo.json()
     assert payload["current_time"].startswith(DEMO_AS_OF.isoformat()[:10])
     chat = await client.post("/api/chat", json={"message": JACKET_PROMPT})
+    assert chat.status_code == 200
+    payload_after = (await client.get("/api/demo")).json()
+    assert payload_after["customer"]["order_count"] == payload["customer"]["order_count"]
     memory = chat.json()["memory"]["rendered"].lower()
     assert "size m" in memory or "medium" in memory
