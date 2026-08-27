@@ -145,7 +145,7 @@ export default function HomePage() {
         <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium uppercase tracking-wide text-slate-500">
-              CogKura Demo 0.3.1
+              CogKura Demo 0.3.2
             </p>
             <h1 className="mt-1 text-3xl font-semibold text-slate-900">
               Northstar Outfitters AI Assistant

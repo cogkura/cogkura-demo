@@ -67,7 +67,7 @@ cap   tokens   coverage   stale concepts   stale units   unclassified
  100    703      4/5             2              5              4
 ```
 
-CogKura at 3/5 with 2 unclassified units is a candidate for CogKuraBench investigation — not demo-side retrieval tuning.
+See [0.3.2 fixture normalisation](design-cogkura-demo-0.3.2.md) for cardinality corrections and bench handoff.
 
 ## Non-goals
 

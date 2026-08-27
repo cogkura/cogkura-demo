@@ -47,7 +47,7 @@ Do not hard-code recommendation answers. CogKura supplies memory context; the mo
 
 ### Source data is application-owned
 
-Map commerce events to `ObservationInput` deterministically. Put structured facts in `metadata["semantic_facts"]` with explicit `cardinality: "one"` for single-slot predicates.
+Map commerce events to `ObservationInput` deterministically. Put structured facts in `metadata["semantic_facts"]` with explicit cardinality: `one` for single-slot predicates (e.g. `jacket_size`, `outerwear_weight_preference`); `many` for multi-value predicates (e.g. `activity_interest`, `product_fit_issue`).
 
 ### Product search is not memory
 

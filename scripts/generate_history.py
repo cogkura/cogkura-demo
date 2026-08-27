@@ -74,7 +74,7 @@ def main() -> None:
             {
                 "predicate": "activity_interest",
                 "object_value": "hiking",
-                "cardinality": "one",
+                "cardinality": "many",
                 "polarity": "affirm",
             }
         ],
@@ -156,7 +156,7 @@ def main() -> None:
             {
                 "predicate": "product_fit_issue",
                 "object_value": "northpeak-alpine-shell:sleeves_too_short",
-                "cardinality": "one",
+                "cardinality": "many",
                 "polarity": "affirm",
             }
         ],
@@ -181,7 +181,7 @@ def main() -> None:
                 {
                     "predicate": "activity_interest",
                     "object_value": "skiing",
-                    "cardinality": "one",
+                    "cardinality": "many",
                     "polarity": "affirm",
                 }
             ]

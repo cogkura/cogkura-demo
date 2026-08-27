@@ -17,6 +17,7 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - **0.2.0:** live memory mutations (size update), purchase/return simulation, HELPFUL/UNHELPFUL learning diagnostics
 - **0.3.0:** read-only **Compare** view — same question through Full History, Search (BM25), and CogKura with deterministic labelled-coverage metrics
 - **0.3.1:** hardened comparison evaluation — expanded evidence, current/stale semantic identity, BM25 budget diagnostics, genuinely read-only Compare
+- **0.3.2:** fixture normalisation — `activity_interest` and `product_fit_issue` cardinality corrected; CogKura miss confirmed for bench handoff
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
@@ -41,7 +42,7 @@ The summary table shows tokens, units, **labelled coverage**, and stale concepts
 
 After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
 
-See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints and [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening.
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the post-0.3.2 CogKura comparison handoff.
 
 ## Architecture
 
