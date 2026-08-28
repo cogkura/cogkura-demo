@@ -2,6 +2,25 @@
 
 Handoff to CogKuraBench and CogKura core. This document records what the demo proves. It does not propose a core algorithm fix.
 
+## 0.15.3 addendum (demo 0.3.5)
+
+| Field | Value |
+|-------|-------|
+| Demo version | `0.3.5` |
+| CogKura version | `0.15.3` |
+| CogKura pin | `cogkura>=0.15.3,<0.16.0` |
+| Scenario / clock / budget | Unchanged from the 0.3.2 run below |
+
+Inspect-only Compare after the 0.15.3 bump:
+
+| Strategy | Tokens | Units | Labelled coverage |
+|----------|--------|-------|-------------------|
+| Full History | 2335 | 134 | 5/5 |
+| Search (BM25) | 703 | 34 | 4/5 |
+| CogKura | **17** | **2** | **1/5** |
+
+Same seed Compare outcome as 0.15.2: current jacket size M only. Live size update (`Actually, I'm back to a large now.`) now yields **contested** M and L semantics (overlapping validity) rather than a clean `ACTIVE` L supersession.
+
 ## 0.15.2 addendum (demo 0.3.4)
 
 | Field | Value |
@@ -149,4 +168,4 @@ The demo does **not** establish whether those concepts are absent from broad rec
 
 ## Next step
 
-Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor.
+Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor. On 0.15.3, Compare is unchanged at 1/5; investigate evidence-linked admission for the remaining predicates and contested overlap on live size updates.

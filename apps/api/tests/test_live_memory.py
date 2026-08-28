@@ -110,22 +110,23 @@ async def test_baseline_jacket_size_is_medium(demo_memory: DemoMemory) -> None:
 
 
 @pytest.mark.asyncio
-async def test_size_statement_supersedes_and_same_turn_context(
+async def test_size_statement_records_contested_size_update(
     agent_inspect_only: AgentService,
 ) -> None:
     result = await agent_inspect_only.handle_message(SIZE_STATEMENT)
     assert result.response.mutation is not None
     processing = result.response.mutation.processing
     assert processing.revisions_created >= 1 or processing.updated >= 1
+    assert processing.conflicts >= 1
     snapshot = await agent_inspect_only._demo_memory.semantic_snapshot(
         valid_at=agent_inspect_only._demo_memory.session.clock.current,
     )
-    current_sizes = [
-        item.object_value.lower()
-        for item in snapshot
-        if item.predicate == "jacket_size" and item.status in {"current", "active"}
-    ]
-    assert "l" in current_sizes
+    jacket_sizes = [item for item in snapshot if item.predicate == "jacket_size"]
+    values_by_status = {item.object_value.lower(): item.status for item in jacket_sizes}
+    assert values_by_status.get("l") == "contested"
+    assert values_by_status.get("m") == "contested"
+    rendered = result.response.memory.rendered.lower()
+    assert "large" in rendered or "size l" in rendered
 
 
 @pytest.mark.asyncio

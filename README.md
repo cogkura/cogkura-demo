@@ -20,6 +20,7 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - **0.3.2:** fixture normalisation — `activity_interest` and `product_fit_issue` cardinality corrected; CogKura miss confirmed for bench handoff
 - **0.3.3:** CogKura `0.15.1` — seed history uses evidence chronology and currently falls below the retrieval threshold (0 labelled coverage / 0 context tokens); learning is skipped when the turn context has no selected memories
 - **0.3.4:** CogKura `0.15.2` — lexical semantic slot admission restores current jacket size in seed context (1/5 labelled coverage); remaining misses stay a CogKura finding
+- **0.3.5:** CogKura `0.15.3` — evidence-chronology cardinality-one reconciliation and evidence-linked semantic recall; live size update surfaces contested M/L overlap
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
@@ -44,7 +45,7 @@ The summary table shows tokens, units, **labelled coverage**, and stale concepts
 
 After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
 
-See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.4.md](docs/design-cogkura-demo-0.3.4.md) for the CogKura 0.15.2 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.5.md](docs/design-cogkura-demo-0.3.5.md) for the CogKura 0.15.3 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
 
 ## Architecture
 
