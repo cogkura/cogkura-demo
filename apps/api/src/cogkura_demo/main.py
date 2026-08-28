@@ -126,7 +126,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="CogKura Demo API", version="0.3.5", lifespan=lifespan)
+app = FastAPI(title="CogKura Demo API", version="0.3.6", lifespan=lifespan)
 settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
