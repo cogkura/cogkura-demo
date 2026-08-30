@@ -2,6 +2,48 @@
 
 Handoff to CogKuraBench and CogKura core. This document records what the demo proves. It does not propose a core algorithm fix.
 
+## 0.15.6 addendum (demo 0.3.8)
+
+| Field | Value |
+|-------|-------|
+| Demo version | `0.3.8` |
+| CogKura version | `0.15.6` |
+| CogKura pin | `cogkura>=0.15.6,<0.16.0` |
+| Scenario / clock / budget | Unchanged from the 0.3.2 run below |
+
+Inspect-only Compare after the 0.15.6 bump:
+
+| Strategy | Tokens | Units | Labelled coverage |
+|----------|--------|-------|-------------------|
+| Full History | 2335 | 134 | 5/5 |
+| Search (BM25) | 703 | 34 | 4/5 |
+| CogKura | **89** | **8** | **3/5** |
+
+Found: `jacket_size:current:M`, `hiking_interest`, `colour_preference:neutral`. Missing: lightweight outerwear, NorthPeak fit. Stale: `skiing_interest` (ski-browse episode still selected). Inspection: 35 considered, 10 returned (0 above threshold; 6 `semantic_current_admission`, 4 `semantic_slot_admission`), 0 collapsed, 2 insufficient relevance, 23 below threshold. Hiking returns at `direct_value` (`hiking`); skiing at `evidence_association` (`jacket`) without collapsing hiking. Colour navy/black/grey all returned (`jacket` evidence). Lightweight and NorthPeak: relevance 0, tier `contextual`. Selector: 10 candidates, 8 selected (`max_items`). Live size update remains contested M/L.
+
+The demo does not lower the threshold or retune ranking.
+
+## 0.15.5 addendum (demo 0.3.7)
+
+| Field | Value |
+|-------|-------|
+| Demo version | `0.3.7` |
+| CogKura version | `0.15.5` |
+| CogKura pin | `cogkura>=0.15.5,<0.16.0` |
+| Scenario / clock / budget | Unchanged from the 0.3.2 run below |
+
+Inspect-only Compare after the 0.15.5 bump:
+
+| Strategy | Tokens | Units | Labelled coverage |
+|----------|--------|-------|-------------------|
+| Full History | 2335 | 134 | 5/5 |
+| Search (BM25) | 703 | 34 | 4/5 |
+| CogKura | **81** | **6** | **2/5** |
+
+Found: `jacket_size:current:M`, `colour_preference:neutral`. Missing: hiking interest, lightweight outerwear, NorthPeak fit. Stale: `skiing_interest` (1 stale unit). Canonical query features: `hiking, jacket, looking, month, next, recommend, scotland, trip, waterproof`. Inspection: 35 considered, 6 returned (0 above threshold; 3 `semantic_current_admission`, 3 `semantic_slot_admission`), 4 collapsed, 2 insufficient relevance, 23 below threshold. Hiking semantic is current-admitted (`matched_direct_features=hiking`) then collapsed; skiing is returned via evidence feature `jacket`. Colour grey returned via evidence feature `jacket`; navy/black collapsed. Lightweight and NorthPeak: relevance 0, empty matched features, `association_path=None`. Selector: 6/6 selected. Live size update remains contested M/L.
+
+The demo does not lower the threshold or retune ranking.
+
 ## 0.15.4 addendum (demo 0.3.6)
 
 | Field | Value |
@@ -189,4 +231,4 @@ The demo does **not** establish whether those concepts are absent from broad rec
 
 ## Next step
 
-Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor. On 0.15.3, Compare is unchanged at 1/5; investigate evidence-linked admission for the remaining predicates and contested overlap on live size updates. On 0.15.4, Compare is 3/5; investigate why lightweight and NorthPeak fit still fail current admission.
+Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor. On 0.15.3, Compare is unchanged at 1/5; investigate evidence-linked admission for the remaining predicates and contested overlap on live size updates. On 0.15.4, Compare is 3/5; investigate why lightweight and NorthPeak fit still fail current admission. On 0.15.5, Compare is 2/5: hiking current-admits then collapses against skiing; lightweight and NorthPeak still have relevance 0 and no association path. On 0.15.6, Compare is 3/5 with hiking restored; investigate remaining lightweight/NorthPeak misses and stale skiing still occupying a working-memory slot.

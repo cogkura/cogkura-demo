@@ -22,6 +22,8 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - **0.3.4:** CogKura `0.15.2` — lexical semantic slot admission restores current jacket size in seed context (1/5 labelled coverage); remaining misses stay a CogKura finding
 - **0.3.5:** CogKura `0.15.3` — evidence-chronology cardinality-one reconciliation and evidence-linked semantic recall; live size update surfaces contested M/L overlap
 - **0.3.6:** CogKura `0.15.4` — current-at-snapshot admission recovers hiking interest and colour preference (3/5 labelled coverage); lightweight and NorthPeak fit remain missing
+- **0.3.7:** CogKura `0.15.5` — canonical retrieval features; Compare 2/5 (size M + colour); hiking collapses against skiing, lightweight and NorthPeak still miss
+- **0.3.8:** CogKura `0.15.6` — cardinality-aware recall restores hiking beside colour and size M (3/5); lightweight and NorthPeak still miss; skiing episode remains stale in context
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
@@ -46,7 +48,7 @@ The summary table shows tokens, units, **labelled coverage**, and stale concepts
 
 After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
 
-See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.6.md](docs/design-cogkura-demo-0.3.6.md) for the CogKura 0.15.4 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.8.md](docs/design-cogkura-demo-0.3.8.md) for the CogKura 0.15.6 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
 
 ## Architecture
 
