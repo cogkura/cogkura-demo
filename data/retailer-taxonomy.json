@@ -1,0 +1,10 @@
+{
+  "category_parents": [
+  {"category_id": "waterproof-jacket", "parent_id": "jacket"},
+  {"category_id": "softshell-jacket", "parent_id": "jacket"},
+  {"category_id": "ski-jacket", "parent_id": "jacket"}
+  ],
+  "historical_products": [
+  {"product_id": "breeze-windbreaker", "parent_id": "jacket"}
+  ]
+}

@@ -62,6 +62,29 @@ class ChatMessage(BaseModel):
     content: str
 
 
+class RelationshipEdgeResponse(BaseModel):
+    relationship_id: str
+    relation_type: str
+    direction: str
+    source_entity_id: str
+    target_entity_id: str
+    weight: float
+    provenance: str | None = None
+
+
+class AssociationPathResponse(BaseModel):
+    matched_features: list[str] = Field(default_factory=list)
+    seed_episode_id: str | None = None
+    seed_entity_id: str | None = None
+    bridge_entity_id: str | None = None
+    related_episode_id: str | None = None
+    hop_kind: str
+    weight: float
+    hop_count: int
+    seed_relevance: float
+    relationship_edges: list[RelationshipEdgeResponse] = Field(default_factory=list)
+
+
 class MemoryItemResponse(BaseModel):
     statement: str
     memory_kind: str
@@ -76,6 +99,9 @@ class MemoryItemResponse(BaseModel):
     learned_utility: float | None = None
     source_event_ids: list[str] = Field(default_factory=list)
     raw_observation_ids: list[str] = Field(default_factory=list)
+    association_path: AssociationPathResponse | None = None
+    relevance_tier: str | None = None
+    structured_association_fit: float | None = None
 
 
 class MemoryAssessmentResponse(BaseModel):
@@ -259,6 +285,9 @@ class ComparisonContextUnitResponse(BaseModel):
     kind: str | None = None
     activation: float | None = None
     retrieval_reason: str | None = None
+    association_path: AssociationPathResponse | None = None
+    relevance_tier: str | None = None
+    structured_association_fit: float | None = None
 
 
 class ComparisonContextResponse(BaseModel):

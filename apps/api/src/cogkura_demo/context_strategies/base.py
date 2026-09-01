@@ -9,6 +9,7 @@ from typing import Protocol
 
 from cogkura import MemoryContext
 
+from cogkura_demo.models import AssociationPathResponse
 from cogkura_demo.scenarios import HistoryEvent
 
 
@@ -43,6 +44,9 @@ class ContextUnit:
     activation: float | None = None
     retrieval_reason: str | None = None
     raw_observation_ids: tuple[str, ...] = ()
+    association_path: AssociationPathResponse | None = None
+    relevance_tier: str | None = None
+    structured_association_fit: float | None = None
 
 
 @dataclass(frozen=True, slots=True)

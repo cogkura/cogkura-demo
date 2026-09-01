@@ -44,6 +44,29 @@ export type DemoStateResponse = {
   current_time?: string;
 };
 
+export type RelationshipEdge = {
+  relationship_id: string;
+  relation_type: string;
+  direction: string;
+  source_entity_id: string;
+  target_entity_id: string;
+  weight: number;
+  provenance?: string | null;
+};
+
+export type AssociationPath = {
+  matched_features: string[];
+  seed_episode_id?: string | null;
+  seed_entity_id?: string | null;
+  bridge_entity_id?: string | null;
+  related_episode_id?: string | null;
+  hop_kind: string;
+  weight: number;
+  hop_count: number;
+  seed_relevance: number;
+  relationship_edges: RelationshipEdge[];
+};
+
 export type MemoryItem = {
   statement: string;
   memory_kind: string;
@@ -56,6 +79,9 @@ export type MemoryItem = {
   memory_key?: string | null;
   revision_key?: string | null;
   learned_utility?: number | null;
+  association_path?: AssociationPath | null;
+  relevance_tier?: string | null;
+  structured_association_fit?: number | null;
 };
 
 export type MemoryAssessment = {
@@ -218,6 +244,9 @@ export type ComparisonContextUnit = {
   kind: string | null;
   activation?: number | null;
   retrieval_reason?: string | null;
+  association_path?: AssociationPath | null;
+  relevance_tier?: string | null;
+  structured_association_fit?: number | null;
 };
 
 export type ComparisonContext = {

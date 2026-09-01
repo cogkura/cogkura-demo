@@ -9,15 +9,17 @@ from pathlib import Path
 from cogkura import LearningFeedback, LearningResult, Memory, MemoryContext, MemoryProcessingResult
 from cogkura.algorithms.semantic import ComplementaryLearningSemanticConsolidator
 from cogkura.algorithms.working_memory import TokenEstimator
-from cogkura.models import StoredSemanticMemory
+from cogkura.models import AssociationPath, RelationshipEdge, StoredSemanticMemory
 from cogkura.storage import InMemoryObservationStore
 
 from cogkura_demo.config import CUSTOMER_ID, TENANT_ID
 from cogkura_demo.models import (
+    AssociationPathResponse,
     MemoryAssessmentResponse,
     MemoryContextResponse,
     MemoryItemResponse,
     ProcessingSummaryResponse,
+    RelationshipEdgeResponse,
     SemanticMemorySnapshot,
 )
 from cogkura_demo.scenarios import (
@@ -28,6 +30,12 @@ from cogkura_demo.scenarios import (
     validate_seed_history,
 )
 from cogkura_demo.session import DemoSession
+from cogkura_demo.taxonomy import (
+    build_entity_relationships,
+    build_taxonomy_observation,
+    load_catalogue,
+    load_retailer_taxonomy,
+)
 
 
 def _create_memory(
@@ -50,10 +58,12 @@ class DemoMemory:
         data_dir: Path,
         token_estimator: TokenEstimator,
         memory_budget_tokens: int,
+        seed_taxonomy: bool = True,
     ) -> None:
         self._data_dir = data_dir
         self._token_estimator = token_estimator
         self._memory_budget_tokens = memory_budget_tokens
+        self._seed_taxonomy = seed_taxonomy
         self._observation_store = InMemoryObservationStore()
         self._memory = _create_memory(token_estimator, self._observation_store)
         self._event_ids_by_observation: dict[str, str] = {}
@@ -107,6 +117,15 @@ class DemoMemory:
         self._observation_store = InMemoryObservationStore()
         self._memory = _create_memory(self._token_estimator, self._observation_store)
         self._session = DemoSession(seed_bundle=bundle)
+        if self._seed_taxonomy:
+            catalogue = load_catalogue(self._data_dir)
+            taxonomy = load_retailer_taxonomy(self._data_dir)
+            relationships = build_entity_relationships(catalogue, taxonomy)
+            taxonomy_observation = build_taxonomy_observation(
+                relationships=relationships,
+                observed_at=self._session.clock.current,
+            )
+            await self._memory.observe(taxonomy_observation)
         for event in bundle.history:
             await self._memory.observe(event_to_observation(event))
         await self._memory.process(
@@ -219,6 +238,35 @@ def _resolve_source_event_ids(
     return resolved
 
 
+def _map_relationship_edge(edge: RelationshipEdge) -> RelationshipEdgeResponse:
+    return RelationshipEdgeResponse(
+        relationship_id=edge.relationship_id,
+        relation_type=edge.relation_type,
+        direction=edge.direction,
+        source_entity_id=edge.source_entity_id,
+        target_entity_id=edge.target_entity_id,
+        weight=edge.weight,
+        provenance=edge.provenance,
+    )
+
+
+def _map_association_path(path: AssociationPath | None) -> AssociationPathResponse | None:
+    if path is None:
+        return None
+    return AssociationPathResponse(
+        matched_features=list(path.matched_features),
+        seed_episode_id=path.seed_episode_id,
+        seed_entity_id=path.seed_entity_id,
+        bridge_entity_id=path.bridge_entity_id,
+        related_episode_id=path.related_episode_id,
+        hop_kind=path.hop_kind,
+        weight=path.weight,
+        hop_count=path.hop_count,
+        seed_relevance=path.seed_relevance,
+        relationship_edges=[_map_relationship_edge(edge) for edge in path.relationship_edges],
+    )
+
+
 def map_memory_context(
     context: MemoryContext,
     *,
@@ -246,6 +294,9 @@ def map_memory_context(
         revision_key = None
         if hasattr(item.memory, "revision_key"):
             revision_key = item.memory.revision_key
+        association_path = None
+        if diagnostics is not None:
+            association_path = _map_association_path(diagnostics.association_path)
         items.append(
             MemoryItemResponse(
                 statement=item.memory.statement,
@@ -261,6 +312,11 @@ def map_memory_context(
                 learned_utility=item.components.learned_utility,
                 source_event_ids=source_event_ids,
                 raw_observation_ids=raw_observation_ids,
+                association_path=association_path,
+                relevance_tier=diagnostics.relevance_tier if diagnostics else None,
+                structured_association_fit=(
+                    diagnostics.structured_association_fit if diagnostics else None
+                ),
             )
         )
     return MemoryContextResponse(

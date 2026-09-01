@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cogkura-demo-api"
-version = "0.3.10"
+version = "0.3.11"
 description = "FastAPI backend for the CogKura e-commerce memory demo."
 requires-python = ">=3.11"
 license = "Apache-2.0"

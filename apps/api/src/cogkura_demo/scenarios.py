@@ -90,21 +90,39 @@ def load_scenario_bundle(data_dir: Path) -> ScenarioBundle:
     return ScenarioBundle(customer=customer, history=history, scenario=scenario)
 
 
+def _semantic_fact_payload(
+    fact: SemanticFactSpec,
+    *,
+    event: HistoryEvent,
+) -> dict[str, Any]:
+    payload = fact.model_dump(exclude_none=True)
+    for key in ("valid_from", "valid_until"):
+        if key in payload and isinstance(payload[key], datetime):
+            payload[key] = payload[key].astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    if event.product_id and _fact_uses_product_entity(fact, event):
+        payload["object_entity_id"] = event.product_id
+    return payload
+
+
+def _fact_uses_product_entity(fact: SemanticFactSpec, event: HistoryEvent) -> bool:
+    if fact.predicate == "product_fit_issue":
+        return True
+    if fact.predicate == "outerwear_weight_preference" and event.product_id is not None:
+        return True
+    return False
+
+
 def event_to_observation(event: HistoryEvent) -> ObservationInput:
     metadata: dict[str, Any] = dict(event.metadata)
     if event.semantic_facts:
-        facts: list[dict[str, Any]] = []
-        for fact in event.semantic_facts:
-            payload = fact.model_dump(exclude_none=True)
-            for key in ("valid_from", "valid_until"):
-                if key in payload and isinstance(payload[key], datetime):
-                    payload[key] = payload[key].astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-            facts.append(payload)
-        metadata["semantic_facts"] = facts
+        metadata["semantic_facts"] = [
+            _semantic_fact_payload(fact, event=event) for fact in event.semantic_facts
+        ]
     if event.session_id:
         metadata["session_id"] = event.session_id
     if event.product_id:
         metadata["product_id"] = event.product_id
+        metadata["entity_ids"] = [event.product_id]
     if event.reason:
         metadata["reason"] = event.reason
 

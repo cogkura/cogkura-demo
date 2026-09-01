@@ -159,6 +159,9 @@ def _map_context(context: PreparedCustomerContext) -> ComparisonContextResponse:
                 kind=unit.kind,
                 activation=unit.activation,
                 retrieval_reason=unit.retrieval_reason,
+                association_path=unit.association_path,
+                relevance_tier=unit.relevance_tier,
+                structured_association_fit=unit.structured_association_fit,
             )
             for unit in context.units
         ],

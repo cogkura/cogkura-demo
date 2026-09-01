@@ -44,6 +44,9 @@ class CogKuraStrategy:
                 activation=item.activation,
                 retrieval_reason=item.retrieval_reason,
                 raw_observation_ids=tuple(item.raw_observation_ids),
+                association_path=item.association_path,
+                relevance_tier=item.relevance_tier,
+                structured_association_fit=item.structured_association_fit,
             )
             for index, item in enumerate(mapped.items)
         )

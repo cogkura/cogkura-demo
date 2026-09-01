@@ -1,4 +1,5 @@
 import type {
+  AssociationPath,
   ComparisonContext,
   ComparisonResult,
   ContextStrategyDiagnostics,
@@ -104,6 +105,34 @@ function DiagnosticsPanel({ diagnostics }: { diagnostics: ContextStrategyDiagnos
   );
 }
 
+function RelationshipPathPanel({ path }: { path: AssociationPath }) {
+  if (path.hop_kind !== "relationship" || path.relationship_edges.length === 0) {
+    return null;
+  }
+
+  const seed = path.seed_entity_id ?? path.seed_episode_id ?? "query";
+  const edges = path.relationship_edges;
+  const targetEntity = edges[edges.length - 1]?.source_entity_id ?? path.bridge_entity_id;
+
+  return (
+    <div className="mt-2 rounded-md border border-sky-100 bg-sky-50 p-2 text-xs text-slate-700">
+      <p className="font-semibold text-slate-800">Why recalled</p>
+      <p className="mt-1 font-mono text-slate-600">{seed}</p>
+      {edges.map((edge) => (
+        <p key={edge.relationship_id} className="mt-1 font-mono text-slate-600">
+          ← {edge.relation_type} {edge.target_entity_id}
+        </p>
+      ))}
+      {targetEntity ? (
+        <p className="mt-1 font-mono text-slate-600">→ {targetEntity}</p>
+      ) : null}
+      {path.related_episode_id ? (
+        <p className="mt-1 text-slate-500">episode {path.related_episode_id}</p>
+      ) : null}
+    </div>
+  );
+}
+
 export function ComparisonContextPanel({
   context,
   mode,
@@ -180,6 +209,9 @@ export function ComparisonContextPanel({
                 ) : null}
                 {unit.retrieval_reason ? (
                   <p className="mt-1 text-xs text-slate-500">{unit.retrieval_reason}</p>
+                ) : null}
+                {unit.association_path ? (
+                  <RelationshipPathPanel path={unit.association_path} />
                 ) : null}
                 {unit.source_event_ids.length > 0 ? (
                   <EventIds ids={unit.source_event_ids} />

@@ -1,9 +1,30 @@
-import type { MemoryItem } from "@/lib/types";
+import type { AssociationPath, MemoryItem } from "@/lib/types";
 
 type Props = {
   item: MemoryItem;
   showDetails?: boolean;
 };
+
+function RelationshipPathSummary({ path }: { path: AssociationPath }) {
+  if (path.hop_kind !== "relationship" || path.relationship_edges.length === 0) {
+    return null;
+  }
+  const seed = path.seed_entity_id ?? path.seed_episode_id ?? "query";
+  return (
+    <div>
+      <dt className="font-medium">Structured path</dt>
+      <dd className="font-mono">
+        {seed}
+        {path.relationship_edges.map((edge) => (
+          <span key={edge.relationship_id}>
+            {" "}
+            ← {edge.relation_type} {edge.target_entity_id}
+          </span>
+        ))}
+      </dd>
+    </div>
+  );
+}
 
 export function MemoryItemCard({ item, showDetails = false }: Props) {
   return (
@@ -31,6 +52,9 @@ export function MemoryItemCard({ item, showDetails = false }: Props) {
               <dt className="font-medium">Retrieval</dt>
               <dd>{item.retrieval_reason}</dd>
             </div>
+          ) : null}
+          {item.association_path ? (
+            <RelationshipPathSummary path={item.association_path} />
           ) : null}
           {item.selection_reason ? (
             <div>
