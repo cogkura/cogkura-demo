@@ -25,6 +25,7 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - **0.3.7:** CogKura `0.15.5` — canonical retrieval features; Compare 2/5 (size M + colour); hiking collapses against skiing, lightweight and NorthPeak still miss
 - **0.3.8:** CogKura `0.15.6` — cardinality-aware recall restores hiking beside colour and size M (3/5); lightweight and NorthPeak still miss; skiing episode remains stale in context
 - **0.3.9:** CogKura `0.15.7` — entity-indexed association hops; Compare coverage unchanged at 3/5 (association paths unused on this query); lightweight and NorthPeak still miss
+- **0.3.10:** CogKura `0.15.8` — structured entity-relationship hops; Compare coverage unchanged at 3/5 (`relationship_seed_count=0` because the demo does not emit relationship metadata)
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
@@ -49,7 +50,7 @@ The summary table shows tokens, units, **labelled coverage**, and stale concepts
 
 After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
 
-See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.9.md](docs/design-cogkura-demo-0.3.9.md) for the CogKura 0.15.7 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.10.md](docs/design-cogkura-demo-0.3.10.md) for the CogKura 0.15.8 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
 
 ## Architecture
 
