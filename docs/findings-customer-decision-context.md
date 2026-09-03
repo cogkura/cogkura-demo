@@ -2,6 +2,32 @@
 
 Handoff to CogKuraBench and CogKura core. This document records what the demo proves. It does not propose a core algorithm fix.
 
+## 0.15.10 addendum (demo 0.3.12)
+
+| Field | Value |
+|-------|-------|
+| Demo version | `0.3.12` |
+| CogKura version | `0.15.10` |
+| CogKura pin | `cogkura>=0.15.10,<0.16.0` |
+| Scenario / clock / budget | Unchanged from the 0.3.2 run below |
+| Taxonomy | Same 0.3.11 seed (15 entities, 14 `is_a` relationships) |
+
+Inspect-only Compare after the 0.15.10 bump (structured taxonomy):
+
+| Strategy | Tokens | Units | Labelled coverage |
+|----------|--------|-------|-------------------|
+| Full History | 2335 | 134 | 5/5 |
+| Search (BM25) | 703 | 34 | 4/5 |
+| CogKura | **135** | **6** | **5/5** |
+
+Found (selected context): `jacket_size:current:M`, `hiking_interest`, `colour_preference:neutral`, `outerwear_weight_preference:lightweight`, `northpeak_fit_issue`. Missing: none. Stale: `skiing_interest`; `jacket_size:stale:L`. `relationship_paths_used=3`. NorthPeak and lightweight selected via `semantic_with_support` chunks. Full History and BM25 unchanged.
+
+**0.15.9 interim:** chunking reached 5/5 Compare but Live Memory size update and short cue (`Need a waterproof jacket.`) raised `AssertionError` in `_serialize_semantic_chunk` when a support episode outranked its semantic.
+
+**0.15.10:** explicit semantic structural primary for `SEMANTIC_WITH_SUPPORT` chunks. Demo 0.3.12 restores Live Memory (size update, short cue, jacket-after-size, purchase-after-size, reset) with chunking enabled. Contested M/L after live size update remains visible — that is a separate reconsolidation/state issue, not a serialization failure.
+
+The demo does not disable chunking, catch `AssertionError`, or suppress stale skiing.
+
 ## 0.3.11 structured product context (demo 0.3.11, CogKura 0.15.8)
 
 | Field | Value |
@@ -293,4 +319,4 @@ The demo does **not** establish whether those concepts are absent from broad rec
 
 ## Next step
 
-Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor. On 0.15.3, Compare is unchanged at 1/5; investigate evidence-linked admission for the remaining predicates and contested overlap on live size updates. On 0.15.4, Compare is 3/5; investigate why lightweight and NorthPeak fit still fail current admission. On 0.15.5, Compare is 2/5: hiking current-admits then collapses against skiing; lightweight and NorthPeak still have relevance 0 and no association path. On 0.15.6, Compare is 3/5 with hiking restored; investigate remaining lightweight/NorthPeak misses and stale skiing still occupying a working-memory slot. On 0.15.7, Compare is unchanged at 3/5: association seeds exist but `association_paths_used=0`, so entity-indexed hops do not recover lightweight or NorthPeak. On 0.15.8, Compare is unchanged at 3/5 with legacy data (`relationship_seed_count=0`). On 0.3.11 structured product context, broad recall reaches NorthPeak fit and lightweight preference via `structured_relation` paths but working memory still selects 8/10 recalled items (3/5 labelled coverage). Next Core work: working-memory coverage and redundancy at `max_items=8`.
+Port this scenario into CogKuraBench with the same query, goal, clock, budget, and gold evidence. On 0.15.0, investigate why `prepare_context()` working memory favoured hiking episodic mass over decision-critical preference and fit-issue memories. On 0.15.1, investigate why seed-history activation from evidence chronology falls entirely below threshold at `as_of=2026-08-01`. On 0.15.2, lexical soft admission recovers current size M; investigate why hiking, lightweight, NorthPeak fit, and colour still fail lexical relevance or the soft-admission floor. On 0.15.3, Compare is unchanged at 1/5; investigate evidence-linked admission for the remaining predicates and contested overlap on live size updates. On 0.15.4, Compare is 3/5; investigate why lightweight and NorthPeak fit still fail current admission. On 0.15.5, Compare is 2/5: hiking current-admits then collapses against skiing; lightweight and NorthPeak still have relevance 0 and no association path. On 0.15.6, Compare is 3/5 with hiking restored; investigate remaining lightweight/NorthPeak misses and stale skiing still occupying a working-memory slot. On 0.15.7, Compare is unchanged at 3/5: association seeds exist but `association_paths_used=0`, so entity-indexed hops do not recover lightweight or NorthPeak. On 0.15.8, Compare is unchanged at 3/5 with legacy data (`relationship_seed_count=0`). On 0.3.11 structured product context, broad recall reaches NorthPeak fit and lightweight preference via `structured_relation` paths but working memory still selects 8/10 recalled items (3/5 labelled coverage). On 0.15.9, coverage-aware chunking reaches 5/5 Compare but Live Memory asserts on `semantic_with_support` primary ordering. On 0.15.10 / demo 0.3.12, Live Memory is restored with chunking enabled; Compare stays 5/5 at 6 chunks. Next Core work: contested live M/L reconsolidation and stale/novelty inhibition (skiing episode still selected).

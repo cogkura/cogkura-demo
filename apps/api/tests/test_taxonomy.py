@@ -198,7 +198,7 @@ async def test_structured_recall_returns_northpeak_and_lightweight_semantics(
 
 
 @pytest.mark.asyncio
-async def test_structured_semantics_recalled_but_not_selected(
+async def test_structured_semantics_recalled_and_selected(
     structured_memory: DemoMemory,
     counter: TiktokenCounter,
 ) -> None:
@@ -216,14 +216,13 @@ async def test_structured_semantics_recalled_but_not_selected(
         ComparisonRequest(message=JACKET_PROMPT, generate_answers=False),
     )
     cogkura = next(result for result in run.response.results if result.mode == "cogkura")
-    assert cogkura.metrics.context_tokens == 89
-    assert cogkura.metrics.context_units == 8
-    assert cogkura.relevance.expected_concepts_found == 3
-    assert "northpeak_fit_issue" in cogkura.relevance.concepts_missing
-    assert "outerwear_weight_preference:lightweight" in cogkura.relevance.concepts_missing
+    assert cogkura.metrics.context_tokens == 135
+    assert cogkura.metrics.context_units == 6
+    assert cogkura.relevance.expected_concepts_found == 5
+    assert cogkura.relevance.concepts_missing == []
     selected_text = " ".join(unit.text.lower() for unit in cogkura.context.units)
-    assert "northpeak" not in selected_text
-    assert "lightweight" not in selected_text
+    assert "northpeak" in selected_text
+    assert "lightweight" in selected_text
 
 
 @pytest.mark.asyncio
@@ -256,7 +255,8 @@ async def test_legacy_compare_matches_run_b_baseline(
     assert inspection.relationship_seed_count == 0
     assert inspection.relationship_paths_used == 0
     assert cogkura.relevance.expected_concepts_found == 3
-    assert cogkura.metrics.context_units == 8
+    assert cogkura.metrics.context_units == 4
+    assert cogkura.metrics.context_tokens == 90
 
 
 @pytest.mark.asyncio

@@ -9,7 +9,12 @@ from pathlib import Path
 from cogkura import LearningFeedback, LearningResult, Memory, MemoryContext, MemoryProcessingResult
 from cogkura.algorithms.semantic import ComplementaryLearningSemanticConsolidator
 from cogkura.algorithms.working_memory import TokenEstimator
-from cogkura.models import AssociationPath, RelationshipEdge, StoredSemanticMemory
+from cogkura.models import (
+    AssociationPath,
+    RelationshipEdge,
+    StoredSemanticMemory,
+    WorkingMemoryItem,
+)
 from cogkura.storage import InMemoryObservationStore
 
 from cogkura_demo.config import CUSTOMER_ID, TENANT_ID
@@ -250,6 +255,28 @@ def _map_relationship_edge(edge: RelationshipEdge) -> RelationshipEdgeResponse:
     )
 
 
+def _observation_ids_from_item(item: WorkingMemoryItem) -> list[str]:
+    recalls = item.member_recalls or (item.recall,)
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for recall in recalls:
+        diagnostics = recall.diagnostics
+        if diagnostics is None or not diagnostics.observation_evidence_ids:
+            continue
+        for observation_id in diagnostics.observation_evidence_ids:
+            if observation_id in seen:
+                continue
+            seen.add(observation_id)
+            ordered.append(observation_id)
+    return ordered
+
+
+def _item_statement(item: WorkingMemoryItem) -> str:
+    if item.chunk is not None:
+        return item.chunk.serialized_text
+    return item.memory.statement
+
+
 def _map_association_path(path: AssociationPath | None) -> AssociationPathResponse | None:
     if path is None:
         return None
@@ -276,14 +303,12 @@ def map_memory_context(
     for item in context.items:
         diagnostics = item.recall.diagnostics
         provenance = None
-        source_event_ids: list[str] = []
-        raw_observation_ids: list[str] = []
-        if diagnostics is not None and diagnostics.observation_evidence_ids:
-            raw_observation_ids = list(diagnostics.observation_evidence_ids)
-            source_event_ids = _resolve_source_event_ids(
-                diagnostics.observation_evidence_ids,
-                event_ids_by_observation,
-            )
+        raw_observation_ids = _observation_ids_from_item(item)
+        source_event_ids = _resolve_source_event_ids(
+            raw_observation_ids,
+            event_ids_by_observation,
+        )
+        if source_event_ids:
             provenance = ", ".join(source_event_ids[:3])
         retrieval_reason = item.recall.reason
         if provenance:
@@ -299,7 +324,7 @@ def map_memory_context(
             association_path = _map_association_path(diagnostics.association_path)
         items.append(
             MemoryItemResponse(
-                statement=item.memory.statement,
+                statement=_item_statement(item),
                 memory_kind=item.memory_kind.value,
                 score=item.recall.score,
                 activation=item.recall.activation,

@@ -77,6 +77,6 @@ async def test_agent_inspect_only() -> None:
         model_available=False,
         interaction_mapper=interaction_mapper,
     )
-    result = await agent.handle_message("Need a waterproof jacket.")
+    result = await agent.handle_message(demo_memory.bundle.scenario.prompt)
     assert result.response.status == "model_unavailable"
     assert result.context is not None

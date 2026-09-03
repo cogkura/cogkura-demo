@@ -27,6 +27,7 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - **0.3.9:** CogKura `0.15.7` — entity-indexed association hops; Compare coverage unchanged at 3/5 (association paths unused on this query); lightweight and NorthPeak still miss
 - **0.3.10:** CogKura `0.15.8` — structured entity-relationship hops; Compare coverage unchanged at 3/5 (`relationship_seed_count=0` because the demo does not emit relationship metadata)
 - **0.3.11:** retailer catalogue `is_a` taxonomy seeded via public CogKura API; NorthPeak fit and lightweight preference now **recalled** via `structured_relation` paths but still **not selected** (3/5 labelled coverage; WM bottleneck at `max_items=8`)
+- **0.3.12:** CogKura `0.15.10` — working-memory chunking with Live Memory restored (size update, short cue, post-size flows); Compare 5/5 at 6 chunks / 135 tokens; contested M/L remains a separate semantic-state finding
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
@@ -51,7 +52,7 @@ The summary table shows tokens, units, **labelled coverage**, and stale concepts
 
 After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
 
-See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.11.md](docs/design-cogkura-demo-0.3.11.md) for structured product context, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.12.md](docs/design-cogkura-demo-0.3.12.md) for Live Memory chunking compatibility, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
 
 ## Architecture
 

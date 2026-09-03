@@ -37,6 +37,8 @@ async def test_prepare_context_returns_bounded_memory(demo_memory: DemoMemory) -
     mapped = demo_memory.map_context(context)
     assert mapped.estimated_tokens <= 750
     assert mapped.estimated_tokens > 0
+    assert len(context.items) <= 8
+    assert all(item.chunk is not None for item in context.items)
     statements = " ".join(item.statement.lower() for item in mapped.items)
     keywords = ("hiking", "lightweight", "northpeak", "medium", "m")
     assert any(token in statements for token in keywords)
@@ -44,6 +46,22 @@ async def test_prepare_context_returns_bounded_memory(demo_memory: DemoMemory) -
     assert event_ids
     assert all(not _looks_like_uuid(event_id) for event_id in event_ids)
     assert any(event_id.startswith("evt-") for event_id in event_ids)
+
+
+@pytest.mark.asyncio
+async def test_short_cue_prepares_chunked_context(demo_memory: DemoMemory) -> None:
+    bundle = load_scenario_bundle(DATA_DIR)
+    context = await demo_memory.prepare_customer_context(
+        "Need a waterproof jacket.",
+        goal=bundle.scenario.goal,
+        as_of=DEMO_AS_OF,
+    )
+    assert context.estimated_tokens <= 750
+    assert context.estimated_tokens > 0
+    assert len(context.items) <= 8
+    assert all(item.chunk is not None for item in context.items)
+    rendered = context.render()
+    assert rendered.strip()
 
 
 @pytest.mark.asyncio
