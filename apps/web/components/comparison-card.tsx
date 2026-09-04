@@ -13,8 +13,10 @@ export function ComparisonCard({ result }: Props) {
       <header>
         <h3 className="text-lg font-semibold text-slate-900">{result.label}</h3>
         <p className="mt-1 text-sm text-slate-600">
-          {result.metrics.context_units} units · ~
-          {result.metrics.context_tokens} tokens ·{" "}
+          {result.mode === "cogkura"
+            ? `${result.metrics.context_units} chunks`
+            : `${result.metrics.context_units} units`}{" "}
+          · ~{result.metrics.context_tokens} tokens ·{" "}
           {Math.round(result.metrics.context_prepare_ms)} ms prepare
         </p>
       </header>

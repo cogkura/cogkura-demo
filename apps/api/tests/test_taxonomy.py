@@ -223,6 +223,10 @@ async def test_structured_semantics_recalled_and_selected(
     selected_text = " ".join(unit.text.lower() for unit in cogkura.context.units)
     assert "northpeak" in selected_text
     assert "lightweight" in selected_text
+    assert all(unit.chunk_kind is not None for unit in cogkura.context.units)
+    assert any(unit.chunk_kind == "semantic_with_support" for unit in cogkura.context.units)
+    assert any(unit.chunk_kind == "semantic_collection" for unit in cogkura.context.units)
+    assert all(unit.members and unit.members[0].role == "primary" for unit in cogkura.context.units)
 
 
 @pytest.mark.asyncio

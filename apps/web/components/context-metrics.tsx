@@ -38,7 +38,7 @@ export function ContextMetrics({ metrics }: Props) {
             Working memory
           </p>
           <p className="mt-2 text-2xl font-semibold text-emerald-900">
-            {metrics.memory_items} memories
+            {metrics.memory_items} chunks
           </p>
           <p className="mt-1 text-sm text-emerald-800">
             ~{metrics.memory_context_tokens.toLocaleString("en-GB")} estimated tokens

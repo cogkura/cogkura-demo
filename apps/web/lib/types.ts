@@ -67,6 +67,13 @@ export type AssociationPath = {
   relationship_edges: RelationshipEdge[];
 };
 
+export type ChunkMember = {
+  statement: string;
+  memory_kind: string;
+  memory_key: string;
+  role: "primary" | "support";
+};
+
 export type MemoryItem = {
   statement: string;
   memory_kind: string;
@@ -82,6 +89,10 @@ export type MemoryItem = {
   association_path?: AssociationPath | null;
   relevance_tier?: string | null;
   structured_association_fit?: number | null;
+  chunk_kind?: string | null;
+  member_count?: number | null;
+  members_omitted?: number | null;
+  members?: ChunkMember[];
 };
 
 export type MemoryAssessment = {
@@ -247,6 +258,10 @@ export type ComparisonContextUnit = {
   association_path?: AssociationPath | null;
   relevance_tier?: string | null;
   structured_association_fit?: number | null;
+  chunk_kind?: string | null;
+  member_count?: number | null;
+  members_omitted?: number | null;
+  members?: ChunkMember[];
 };
 
 export type ComparisonContext = {

@@ -162,6 +162,10 @@ def _map_context(context: PreparedCustomerContext) -> ComparisonContextResponse:
                 association_path=unit.association_path,
                 relevance_tier=unit.relevance_tier,
                 structured_association_fit=unit.structured_association_fit,
+                chunk_kind=unit.chunk_kind,
+                member_count=unit.member_count,
+                members_omitted=unit.members_omitted,
+                members=list(unit.members),
             )
             for unit in context.units
         ],

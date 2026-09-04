@@ -37,7 +37,9 @@ export function MemoryContextPanel({ memory }: Props) {
             Memory used for this response
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            {memory.items.length} memories · ~{memory.estimated_tokens} tokens
+            {memory.items.every((item) => item.chunk_kind)
+              ? `${memory.items.length} chunks · ~${memory.estimated_tokens} tokens`
+              : `${memory.items.length} memories · ~${memory.estimated_tokens} tokens`}
           </p>
         </div>
         <button

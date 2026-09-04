@@ -6,6 +6,8 @@ import type {
   RelevanceMetrics,
 } from "@/lib/types";
 
+import { ChunkMembers, chunkKindLabel } from "./chunk-members";
+
 type Props = {
   context: ComparisonContext;
   mode: ComparisonResult["mode"];
@@ -47,7 +49,13 @@ function classificationLabel(classification: string): string {
   }
 }
 
-function DiagnosticsPanel({ diagnostics }: { diagnostics: ContextStrategyDiagnostics }) {
+function DiagnosticsPanel({
+  diagnostics,
+  unitLabel,
+}: {
+  diagnostics: ContextStrategyDiagnostics;
+  unitLabel: string;
+}) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-600">
       <p className="font-semibold text-slate-800">Packing diagnostics</p>
@@ -73,7 +81,9 @@ function DiagnosticsPanel({ diagnostics }: { diagnostics: ContextStrategyDiagnos
         {diagnostics.selected_units !== null ? (
           <div>
             <dt className="inline text-slate-500">Selected: </dt>
-            <dd className="inline">{diagnostics.selected_units} units</dd>
+            <dd className="inline">
+              {diagnostics.selected_units} {unitLabel}
+            </dd>
           </div>
         ) : null}
         {diagnostics.unit_cap !== null ? (
@@ -143,6 +153,7 @@ export function ComparisonContextPanel({
   const evaluationByUnit = new Map(
     relevance.unit_evaluations.map((item) => [item.unit_id, item]),
   );
+  const unitLabel = mode === "cogkura" ? "chunks" : "units";
 
   return (
     <details
@@ -150,28 +161,43 @@ export function ComparisonContextPanel({
       open={!defaultCollapsed}
     >
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-800">
-        Context inspector · {context.units.length} units · ~
+        Context inspector · {context.units.length} {unitLabel} · ~
         {context.estimated_tokens} tokens
       </summary>
       <div className="space-y-3 border-t border-slate-200 px-4 py-4">
-        {diagnostics ? <DiagnosticsPanel diagnostics={diagnostics} /> : null}
+        {diagnostics ? (
+          <DiagnosticsPanel diagnostics={diagnostics} unitLabel={unitLabel} />
+        ) : null}
         {context.units.length === 0 ? (
-          <p className="text-sm text-slate-600">No context units selected.</p>
+          <p className="text-sm text-slate-600">No context {unitLabel} selected.</p>
         ) : (
           context.units.map((unit) => {
             const evaluation = evaluationByUnit.get(unit.id);
+            const members = unit.members ?? [];
+            const kindLabel = chunkKindLabel(unit.chunk_kind, unit.kind ?? "");
+            const memberCount = unit.member_count ?? members.length;
             return (
               <article
                 key={unit.id}
                 className="min-w-0 overflow-hidden rounded-lg border border-slate-200 bg-white p-3"
               >
-                <p className="whitespace-pre-wrap break-words text-sm text-slate-800">
-                  {unit.text}
-                </p>
+                {members.length > 0 ? (
+                  <ChunkMembers
+                    members={members}
+                    membersOmitted={unit.members_omitted}
+                  />
+                ) : (
+                  <p className="whitespace-pre-wrap break-words text-sm text-slate-800">
+                    {unit.text}
+                  </p>
+                )}
                 <div className="mt-2 flex min-w-0 items-center gap-2 text-xs text-slate-500">
-                  {unit.kind ? (
+                  {kindLabel ? (
                     <span className="shrink-0 uppercase tracking-wide">
-                      {unit.kind.replaceAll("_", " ")}
+                      {kindLabel}
+                      {unit.chunk_kind && memberCount > 0
+                        ? ` · ${memberCount} members`
+                        : ""}
                     </span>
                   ) : null}
                   <span

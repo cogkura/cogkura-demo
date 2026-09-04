@@ -85,6 +85,13 @@ class AssociationPathResponse(BaseModel):
     relationship_edges: list[RelationshipEdgeResponse] = Field(default_factory=list)
 
 
+class ChunkMemberResponse(BaseModel):
+    statement: str
+    memory_kind: str
+    memory_key: str
+    role: Literal["primary", "support"]
+
+
 class MemoryItemResponse(BaseModel):
     statement: str
     memory_kind: str
@@ -102,6 +109,10 @@ class MemoryItemResponse(BaseModel):
     association_path: AssociationPathResponse | None = None
     relevance_tier: str | None = None
     structured_association_fit: float | None = None
+    chunk_kind: str | None = None
+    member_count: int | None = None
+    members_omitted: int | None = None
+    members: list[ChunkMemberResponse] = Field(default_factory=list)
 
 
 class MemoryAssessmentResponse(BaseModel):
@@ -288,6 +299,10 @@ class ComparisonContextUnitResponse(BaseModel):
     association_path: AssociationPathResponse | None = None
     relevance_tier: str | None = None
     structured_association_fit: float | None = None
+    chunk_kind: str | None = None
+    member_count: int | None = None
+    members_omitted: int | None = None
+    members: list[ChunkMemberResponse] = Field(default_factory=list)
 
 
 class ComparisonContextResponse(BaseModel):

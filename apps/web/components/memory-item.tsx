@@ -1,5 +1,7 @@
 import type { AssociationPath, MemoryItem } from "@/lib/types";
 
+import { ChunkMembers, chunkKindLabel } from "./chunk-members";
+
 type Props = {
   item: MemoryItem;
   showDetails?: boolean;
@@ -27,11 +29,20 @@ function RelationshipPathSummary({ path }: { path: AssociationPath }) {
 }
 
 export function MemoryItemCard({ item, showDetails = false }: Props) {
+  const members = item.members ?? [];
+  const kindLabel = chunkKindLabel(item.chunk_kind, item.memory_kind);
+  const memberCount = item.member_count ?? members.length;
+
   return (
     <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-sm font-medium text-slate-900">{item.statement}</p>
+      {members.length > 0 ? (
+        <ChunkMembers members={members} membersOmitted={item.members_omitted} />
+      ) : (
+        <p className="text-sm font-medium text-slate-900">{item.statement}</p>
+      )}
       <p className="mt-2 text-xs uppercase tracking-wide text-slate-500">
-        {item.memory_kind.replaceAll("_", " ")}
+        {kindLabel}
+        {item.chunk_kind && memberCount > 0 ? ` · ${memberCount} members` : ""}
       </p>
       {showDetails ? (
         <dl className="mt-3 grid gap-2 text-xs text-slate-600">

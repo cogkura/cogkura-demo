@@ -5,12 +5,14 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
+from typing import Literal
 
 from cogkura import LearningFeedback, LearningResult, Memory, MemoryContext, MemoryProcessingResult
 from cogkura.algorithms.semantic import ComplementaryLearningSemanticConsolidator
 from cogkura.algorithms.working_memory import TokenEstimator
 from cogkura.models import (
     AssociationPath,
+    RecallResult,
     RelationshipEdge,
     StoredSemanticMemory,
     WorkingMemoryItem,
@@ -20,6 +22,7 @@ from cogkura.storage import InMemoryObservationStore
 from cogkura_demo.config import CUSTOMER_ID, TENANT_ID
 from cogkura_demo.models import (
     AssociationPathResponse,
+    ChunkMemberResponse,
     MemoryAssessmentResponse,
     MemoryContextResponse,
     MemoryItemResponse,
@@ -277,6 +280,41 @@ def _item_statement(item: WorkingMemoryItem) -> str:
     return item.memory.statement
 
 
+def _member_from_recall(
+    recall: RecallResult,
+    *,
+    role: Literal["primary", "support"],
+) -> ChunkMemberResponse:
+    return ChunkMemberResponse(
+        statement=recall.memory.statement,
+        memory_kind=recall.memory_kind.value,
+        memory_key=recall.memory.memory_key,
+        role=role,
+    )
+
+
+def _map_chunk_members(item: WorkingMemoryItem) -> list[ChunkMemberResponse]:
+    chunk = item.chunk
+    if chunk is None:
+        return []
+    primary_key = chunk.primary_identity.memory_key
+    recalls = item.member_recalls or (item.recall,)
+    members: list[ChunkMemberResponse] = []
+    seen: set[str] = set()
+    for recall in recalls:
+        if recall.memory.memory_key == primary_key:
+            members.append(_member_from_recall(recall, role="primary"))
+            seen.add(primary_key)
+            break
+    for recall in recalls:
+        key = recall.memory.memory_key
+        if key in seen:
+            continue
+        members.append(_member_from_recall(recall, role="support"))
+        seen.add(key)
+    return members
+
+
 def _map_association_path(path: AssociationPath | None) -> AssociationPathResponse | None:
     if path is None:
         return None
@@ -322,6 +360,8 @@ def map_memory_context(
         association_path = None
         if diagnostics is not None:
             association_path = _map_association_path(diagnostics.association_path)
+        chunk = item.chunk
+        members = _map_chunk_members(item)
         items.append(
             MemoryItemResponse(
                 statement=_item_statement(item),
@@ -342,6 +382,10 @@ def map_memory_context(
                 structured_association_fit=(
                     diagnostics.structured_association_fit if diagnostics else None
                 ),
+                chunk_kind=chunk.chunk_type.value if chunk is not None else None,
+                member_count=chunk.members_included if chunk is not None else None,
+                members_omitted=chunk.members_omitted if chunk is not None else None,
+                members=members,
             )
         )
     return MemoryContextResponse(

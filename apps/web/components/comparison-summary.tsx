@@ -9,9 +9,10 @@ export function ComparisonSummary({ results }: Props) {
     <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
       <table className="min-w-full text-left text-sm">
         <caption className="px-4 py-3 text-left text-xs text-slate-500">
-          Units are memories or events in context. Labelled coverage scores
-          application-defined source evidence for customer concepts, not whether
-          a unit was used.
+          Units are packing slots in context. Full History and Search use events;
+          CogKura uses working-memory chunks (packed memories). Labelled coverage
+          scores application-defined source evidence for customer concepts, not
+          whether a unit was used.
         </caption>
         <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
           <tr>

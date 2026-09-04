@@ -47,6 +47,10 @@ class CogKuraStrategy:
                 association_path=item.association_path,
                 relevance_tier=item.relevance_tier,
                 structured_association_fit=item.structured_association_fit,
+                chunk_kind=item.chunk_kind,
+                member_count=item.member_count,
+                members_omitted=item.members_omitted,
+                members=tuple(item.members),
             )
             for index, item in enumerate(mapped.items)
         )

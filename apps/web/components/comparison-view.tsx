@@ -57,7 +57,8 @@ export function ComparisonView({
           Compare read-only context preparation across full history, lexical search,
           and CogKura working memory. No purchases, returns, or learning run here.
           Labelled coverage measures application-defined source evidence; unclassified
-          units may still be useful.
+          units may still be useful. CogKura slots are working-memory chunks, not
+          single memories.
         </p>
       </section>
 

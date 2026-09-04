@@ -9,7 +9,7 @@ from typing import Protocol
 
 from cogkura import MemoryContext
 
-from cogkura_demo.models import AssociationPathResponse
+from cogkura_demo.models import AssociationPathResponse, ChunkMemberResponse
 from cogkura_demo.scenarios import HistoryEvent
 
 
@@ -47,6 +47,10 @@ class ContextUnit:
     association_path: AssociationPathResponse | None = None
     relevance_tier: str | None = None
     structured_association_fit: float | None = None
+    chunk_kind: str | None = None
+    member_count: int | None = None
+    members_omitted: int | None = None
+    members: tuple[ChunkMemberResponse, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

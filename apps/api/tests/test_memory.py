@@ -39,6 +39,11 @@ async def test_prepare_context_returns_bounded_memory(demo_memory: DemoMemory) -
     assert mapped.estimated_tokens > 0
     assert len(context.items) <= 8
     assert all(item.chunk is not None for item in context.items)
+    assert all(item.chunk_kind is not None for item in mapped.items)
+    assert all(item.members for item in mapped.items)
+    assert all(item.members[0].role == "primary" for item in mapped.items)
+    assert any(item.chunk_kind == "semantic_with_support" for item in mapped.items)
+    assert any(item.chunk_kind == "semantic_collection" for item in mapped.items)
     statements = " ".join(item.statement.lower() for item in mapped.items)
     keywords = ("hiking", "lightweight", "northpeak", "medium", "m")
     assert any(token in statements for token in keywords)
@@ -62,6 +67,9 @@ async def test_short_cue_prepares_chunked_context(demo_memory: DemoMemory) -> No
     assert all(item.chunk is not None for item in context.items)
     rendered = context.render()
     assert rendered.strip()
+    mapped = demo_memory.map_context(context)
+    assert all(item.chunk_kind is not None for item in mapped.items)
+    assert all(item.members[0].role == "primary" for item in mapped.items if item.members)
 
 
 @pytest.mark.asyncio
