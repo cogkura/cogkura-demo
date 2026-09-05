@@ -22,7 +22,7 @@ export function ComparisonSummary({ results }: Props) {
             <th className="px-4 py-3 font-semibold">Labelled coverage</th>
             <th className="px-4 py-3 font-semibold">Stale concepts</th>
             <th className="px-4 py-3 font-semibold">Unclassified</th>
-            <th className="px-4 py-3 font-semibold">Stale units</th>
+            <th className="px-4 py-3 font-semibold">Stale evidence units</th>
             <th className="px-4 py-3 font-semibold">Model input</th>
           </tr>
         </thead>
@@ -49,7 +49,7 @@ export function ComparisonSummary({ results }: Props) {
                 {result.relevance.unclassified_units}
               </td>
               <td className="px-4 py-3 text-slate-700">
-                {result.relevance.stale_units}
+                {result.relevance.stale_evidence_units ?? result.relevance.stale_units}
               </td>
               <td className="px-4 py-3 text-slate-700">
                 {result.metrics.model_input_tokens?.toLocaleString("en-GB") ?? "—"}

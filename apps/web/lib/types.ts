@@ -285,6 +285,7 @@ export type RelevanceMetrics = {
   excluded_concepts_present: number;
   relevant_units: number;
   stale_units: number;
+  stale_evidence_units?: number;
   unclassified_units: number;
   tokens_per_relevant_concept: number | null;
   concepts_found: string[];

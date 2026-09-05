@@ -339,6 +339,7 @@ class RelevanceMetrics(BaseModel):
     excluded_concepts_present: int
     relevant_units: int
     stale_units: int
+    stale_evidence_units: int = 0
     unclassified_units: int
     tokens_per_relevant_concept: float | None = None
     concepts_found: list[str] = Field(default_factory=list)

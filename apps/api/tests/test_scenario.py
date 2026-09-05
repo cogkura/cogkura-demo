@@ -14,11 +14,13 @@ def test_history_count_and_validation() -> None:
 
 def test_observation_mapping_has_semantic_facts() -> None:
     bundle = load_scenario_bundle(DATA_DIR)
-    size_events = [event for event in bundle.history if event.semantic_facts]
-    assert size_events
-    observation = event_to_observation(size_events[0])
+    purchase = next(
+        event for event in bundle.history if event.type == "purchase" and event.semantic_facts
+    )
+    observation = event_to_observation(purchase)
     assert observation.tenant_id == "northstar"
     assert observation.subject_id == "alex"
+    assert observation.metadata["semantic_facts"]
 
 
 def test_scenario_expected_concepts_present() -> None:

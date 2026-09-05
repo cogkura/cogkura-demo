@@ -168,6 +168,10 @@ async def test_full_history_counts_all_ski_stale_units() -> None:
     metrics = evaluator.evaluate(prepared, snapshot.history)
     assert metrics.excluded_concepts_present >= 1
     assert metrics.stale_units >= 6
+    assert metrics.stale_evidence_units >= 6
+    assert metrics.stale_evidence_units == sum(
+        1 for item in metrics.unit_evaluations if item.excluded_concepts
+    )
 
 
 def test_repeated_semantic_value_l_m_l() -> None:

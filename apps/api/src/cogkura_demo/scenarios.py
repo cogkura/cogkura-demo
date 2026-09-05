@@ -11,6 +11,7 @@ from cogkura import ObservationInput
 from pydantic import BaseModel, Field
 
 from cogkura_demo.config import CUSTOMER_ID, DEMO_AS_OF, TENANT_ID
+from cogkura_demo.evidence_policy import semantic_facts_for_observation
 
 EventType = Literal[
     "browse",
@@ -114,9 +115,10 @@ def _fact_uses_product_entity(fact: SemanticFactSpec, event: HistoryEvent) -> bo
 
 def event_to_observation(event: HistoryEvent) -> ObservationInput:
     metadata: dict[str, Any] = dict(event.metadata)
-    if event.semantic_facts:
+    semantic_facts = semantic_facts_for_observation(event)
+    if semantic_facts:
         metadata["semantic_facts"] = [
-            _semantic_fact_payload(fact, event=event) for fact in event.semantic_facts
+            _semantic_fact_payload(fact, event=event) for fact in semantic_facts
         ]
     if event.session_id:
         metadata["session_id"] = event.session_id

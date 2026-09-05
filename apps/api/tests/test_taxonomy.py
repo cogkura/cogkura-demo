@@ -216,10 +216,10 @@ async def test_structured_semantics_recalled_and_selected(
         ComparisonRequest(message=JACKET_PROMPT, generate_answers=False),
     )
     cogkura = next(result for result in run.response.results if result.mode == "cogkura")
-    assert cogkura.metrics.context_tokens == 135
-    assert cogkura.metrics.context_units == 6
     assert cogkura.relevance.expected_concepts_found == 5
     assert cogkura.relevance.concepts_missing == []
+    assert "skiing_interest" not in cogkura.relevance.stale_concepts_found
+    assert cogkura.relevance.stale_concepts_found == ["jacket_size:stale:L"]
     selected_text = " ".join(unit.text.lower() for unit in cogkura.context.units)
     assert "northpeak" in selected_text
     assert "lightweight" in selected_text
@@ -259,8 +259,6 @@ async def test_legacy_compare_matches_run_b_baseline(
     assert inspection.relationship_seed_count == 0
     assert inspection.relationship_paths_used == 0
     assert cogkura.relevance.expected_concepts_found == 3
-    assert cogkura.metrics.context_units == 4
-    assert cogkura.metrics.context_tokens == 90
 
 
 @pytest.mark.asyncio

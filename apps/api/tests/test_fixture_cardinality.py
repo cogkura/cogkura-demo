@@ -76,7 +76,9 @@ async def demo_memory() -> DemoMemory:
 
 
 @pytest.mark.asyncio
-async def test_hiking_and_skiing_activity_interests_coexist(demo_memory: DemoMemory) -> None:
+async def test_hiking_interest_semantic_exists_without_skiing_semantic(
+    demo_memory: DemoMemory,
+) -> None:
     snapshot = await demo_memory.semantic_snapshot(valid_at=DEMO_AS_OF)
     active_statuses = {"current", "active"}
     activity_values = {
@@ -85,7 +87,11 @@ async def test_hiking_and_skiing_activity_interests_coexist(demo_memory: DemoMem
         if item.predicate == "activity_interest" and item.status in active_statuses
     }
     assert "hiking" in activity_values
-    assert "skiing" in activity_values
+    assert "skiing" not in activity_values
+    bundle = load_scenario_bundle(DATA_DIR)
+    ski_browse = [event for event in bundle.history if event.session_id == "sess-ski-browse"]
+    assert len(ski_browse) == 6
+    assert all(event.type == "browse" for event in ski_browse)
 
 
 @pytest.mark.asyncio

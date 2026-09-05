@@ -47,12 +47,14 @@ export function ComparisonMetricsPanel({ relevance, contextUnits }: Props) {
           </dd>
         </div>
         <div>
-          <dt className="text-slate-500">Relevant units</dt>
-          <dd className="font-medium text-slate-900">{relevance.relevant_units}</dd>
+          <dt className="text-slate-500">Units containing stale evidence</dt>
+          <dd className="font-medium text-slate-900">
+            {relevance.stale_evidence_units ?? relevance.stale_units}
+          </dd>
         </div>
         <div>
-          <dt className="text-slate-500">Stale units</dt>
-          <dd className="font-medium text-slate-900">{relevance.stale_units}</dd>
+          <dt className="text-slate-500">Relevant units</dt>
+          <dd className="font-medium text-slate-900">{relevance.relevant_units}</dd>
         </div>
         <div className="sm:col-span-2">
           <dt className="text-slate-500">Unclassified units</dt>

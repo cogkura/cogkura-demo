@@ -47,7 +47,7 @@ Do not hard-code recommendation answers. CogKura supplies memory context; the mo
 
 ### Source data is application-owned
 
-Map commerce events to `ObservationInput` deterministically. Put structured facts in `metadata["semantic_facts"]` with explicit cardinality: `one` for single-slot predicates (e.g. `jacket_size`, `outerwear_weight_preference`); `many` for multi-value predicates (e.g. `activity_interest`, `product_fit_issue`).
+Map commerce events to `ObservationInput` deterministically. Put structured facts in `metadata["semantic_facts"]` with explicit cardinality: `one` for single-slot predicates (e.g. `jacket_size`, `outerwear_weight_preference`); `many` for multi-value predicates (e.g. `activity_interest`, `product_fit_issue`). Apply `evidence_policy.semantic_facts_for_observation()` in `event_to_observation()`: browse and support interactions stay episodic even if the fixture authors semantic facts. Do not invent facts from query text or gold labels.
 
 ### Product search is not memory
 

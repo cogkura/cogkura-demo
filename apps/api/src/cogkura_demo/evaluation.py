@@ -246,6 +246,7 @@ class ComparisonEvaluator:
         tokens_per_relevant = None
         if found_expected and context.estimated_tokens > 0:
             tokens_per_relevant = round(context.estimated_tokens / len(found_expected), 1)
+        stale_evidence_units = sum(1 for item in unit_evaluations if item.excluded_concepts)
 
         concept_labels = {item.concept_id: item.label for item in concepts}
         return RelevanceMetrics(
@@ -255,6 +256,7 @@ class ComparisonEvaluator:
             excluded_concepts_present=len(found_excluded),
             relevant_units=relevant_units,
             stale_units=stale_units,
+            stale_evidence_units=stale_evidence_units,
             unclassified_units=unclassified_units,
             tokens_per_relevant_concept=tokens_per_relevant,
             concepts_found=sorted(found_expected),
