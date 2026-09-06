@@ -223,6 +223,10 @@ async def test_structured_semantics_recalled_and_selected(
     selected_text = " ".join(unit.text.lower() for unit in cogkura.context.units)
     assert "northpeak" in selected_text
     assert "lightweight" in selected_text
+    lightweight = next(unit for unit in cogkura.context.units if "lightweight" in unit.text.lower())
+    assert "size l" not in lightweight.text.lower()
+    assert any("size l" in member.statement.lower() for member in lightweight.members)
+    assert "size l" not in cogkura.context.rendered.lower()
     assert all(unit.chunk_kind is not None for unit in cogkura.context.units)
     assert any(unit.chunk_kind == "semantic_with_support" for unit in cogkura.context.units)
     assert any(unit.chunk_kind == "semantic_collection" for unit in cogkura.context.units)
