@@ -30,6 +30,9 @@ customer history → ObservationInput → CogKura → prepare_context() → Memo
 - **0.3.12:** CogKura `0.15.10` — working-memory chunking with Live Memory restored (size update, short cue, post-size flows); Compare 5/5 at 6 chunks / 135 tokens; contested M/L remains a separate semantic-state finding
 - **0.3.13:** evidence-aware semantic ingestion — isolated browse stays episodic; durable `activity_interest` requires stronger/explicit evidence; Compare 5/5 at 5 chunks / 89 tokens without a skiing semantic
 - **0.3.14:** CogKura `0.15.12` — `SEMANTIC_WITH_SUPPORT` chunks render semantic statement only (0.15.11); Compare 5/5 at 5 chunks / 40 tokens; inspector members still carry support provenance including stale size L
+- **0.3.15:** CogKura `0.16.4` — Encoding Specificity and inspect-only contextual observability; demo still omits encoding/retrieval context, so Compare stays 5/5 at 5 chunks / 40 tokens
+- **0.3.16:** CogKura `0.16.5` — contextual-memory architecture freeze and diagnostic hardening; no-context Compare stays 5/5 at 5 chunks / 40 tokens
+- **0.3.17:** CogKura `0.17.7` — interference and inhibition architecture freeze; application stays off, so Compare stays 5/5 at 5 chunks / 40 tokens
 
 For systematic evaluation and regression measurement, see [CogKuraBench](https://github.com/cogkura/cogkura-bench). Compare relevance metrics in this demo are illustrative and application-defined until captured in a benchmark run.
 
@@ -54,7 +57,7 @@ The summary table shows tokens, units, **labelled coverage**, and stale concepts
 
 After a live size update in **Live Memory**, run the same jacket prompt in **Compare** to see how Full History retains both medium and large evidence while evaluation marks the older size as stale.
 
-See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.13.md](docs/design-cogkura-demo-0.3.13.md) for evidence-aware semantic ingestion, [docs/design-cogkura-demo-0.3.14.md](docs/design-cogkura-demo-0.3.14.md) for the 0.15.12 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
+See [docs/design-cogkura-demo-0.3.0.md](docs/design-cogkura-demo-0.3.0.md) for fairness constraints, [docs/design-cogkura-demo-0.3.1.md](docs/design-cogkura-demo-0.3.1.md) for evaluation hardening, [docs/design-cogkura-demo-0.3.13.md](docs/design-cogkura-demo-0.3.13.md) for evidence-aware semantic ingestion, [docs/design-cogkura-demo-0.3.17.md](docs/design-cogkura-demo-0.3.17.md) for the 0.17.7 bump, and [docs/findings-customer-decision-context.md](docs/findings-customer-decision-context.md) for the comparison handoff.
 
 ## Architecture
 
